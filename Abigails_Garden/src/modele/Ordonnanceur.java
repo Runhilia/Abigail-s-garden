@@ -43,8 +43,7 @@ public class Ordonnanceur extends Observable implements Runnable {
             }
 
             if (update) {
-                setChanged();
-                notifyObservers();
+                updateView();
                 //update = false;
             }
 
@@ -56,5 +55,16 @@ public class Ordonnanceur extends Observable implements Runnable {
             }
         }
 
+
+
     }
+
+    /**
+     * Méthode qui permet de mettre à jour la vue
+     */
+    public void updateView() {
+        setChanged();
+        notifyObservers();
+    }
+
 }

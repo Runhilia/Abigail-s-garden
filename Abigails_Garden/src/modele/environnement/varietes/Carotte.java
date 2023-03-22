@@ -2,17 +2,16 @@ package modele.environnement.varietes;
 
 import modele.SimulateurDate;
 
-import java.util.Date;
+public class Carotte extends Legume {
 
-public class Salade extends Legume {
-
-    public Salade() {
+    public Carotte() {
         super();
-        tempsPousse = 10;
+        tempsPousse = 1;
+        System.out.println("Carotte plantée " + heurePlantation.getDateString());
     }
     @Override
     public Varietes getVariete() {
-        return Varietes.salade;
+        return Varietes.carotte;
     }
 
     @Override
@@ -26,7 +25,7 @@ public class Salade extends Legume {
         }
         else if(heureActuelle == heureFinPousse) {
             etatLegume = EtatLegume.legume;
-            System.out.println("La salade est prête à être ramassée !");
+            System.out.println("La carotte est prête à être ramassée !");
         }
     }
 }

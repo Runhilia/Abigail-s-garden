@@ -8,7 +8,6 @@ package modele;
 
 import modele.environnement.Case;
 import modele.environnement.CaseCultivable;
-import modele.environnement.CaseNonCultivable;
 
 import java.awt.Point;
 import java.util.Random;
@@ -23,7 +22,6 @@ public class SimulateurPotager {
 
     // private HashMap<Case, Point> map = new  HashMap<Case, Point>(); // permet de récupérer la position d'une entité à partir de sa référence
     private Case[][] grilleCases = new Case[SIZE_X][SIZE_Y]; // permet de récupérer une entité à partir de ses coordonnées
-
     public SimulateurPotager() {
 
         initialisationDesEntites();
@@ -39,21 +37,6 @@ public class SimulateurPotager {
     }
     
     private void initialisationDesEntites() {
-
-        // murs extérieurs horizontaux
-        for (int x = 0; x < 20; x++) {
-            addEntite(new CaseNonCultivable(this), x, 0);
-            addEntite(new CaseNonCultivable(this), x, 9);
-        }
-
-        // murs extérieurs verticaux
-        for (int y = 1; y < 9; y++) {
-            addEntite(new CaseNonCultivable(this), 0, y);
-            addEntite(new CaseNonCultivable(this), 19, y);
-        }
-
-        addEntite(new CaseNonCultivable(this), 2, 6);
-        addEntite(new CaseNonCultivable(this), 3, 6);
 
         Random rnd = new Random();
 

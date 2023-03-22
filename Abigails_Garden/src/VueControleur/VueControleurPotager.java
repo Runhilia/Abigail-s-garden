@@ -15,6 +15,7 @@ import javax.swing.*;
 
 import modele.SimulateurPotager;
 import modele.environnement.*;
+import modele.environnement.varietes.EtatLegume;
 import modele.environnement.varietes.Legume;
 
 
@@ -31,9 +32,12 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     // icones affichées dans la grille
     private ImageIcon icoSalade;
+    private ImageIcon icoCarotte;
     private ImageIcon icoTerre;
     private ImageIcon icoVide;
     private ImageIcon icoMur;
+    private ImageIcon icoGraine;
+    private ImageIcon icoPousse;
 
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
@@ -68,10 +72,13 @@ public class VueControleurPotager extends JFrame implements Observer {
     	// image libre de droits utilisée pour les légumes : https://www.vecteezy.com/vector-art/2559196-bundle-of-fruits-and-vegetables-icons	
     
 
-        icoSalade = chargerIcone("Images/data.png", 0, 0, 120, 120);//chargerIcone("Images/Pacman.png");
+        icoSalade = chargerIcone("Images/data.png", 0, 0, 120, 120);
+        icoCarotte = chargerIcone("Images/data.png", 390, 393, 120, 120);
         icoVide = chargerIcone("Images/Vide.png");
         icoMur = chargerIcone("Images/Mur.png");
         icoTerre = chargerIcone("Images/Terre.png");
+        icoGraine = chargerIcone("Images/Fantome.png");
+        icoPousse = chargerIcone("Images/Pacman.png");
     }
 
     private void placerLesComposantsGraphiques() {
@@ -132,11 +139,17 @@ public class VueControleurPotager extends JFrame implements Observer {
                     Legume legume = ((CaseCultivable) simulateurPotager.getPlateau()[x][y]).getLegume();
 
                     if (legume != null) {
-
-                        switch (legume.getVariete()) {
-                            case salade: tabJLabel[x][y].setIcon(icoSalade); break;
+                        if(legume.getEtatLegume() == EtatLegume.graine) {
+                            tabJLabel[x][y].setIcon(icoGraine);
+                        } else if(legume.getEtatLegume() == EtatLegume.pousse) {
+                            tabJLabel[x][y].setIcon(icoPousse);
+                        } else
+                        {
+                            switch (legume.getVariete()) {
+                                case salade: tabJLabel[x][y].setIcon(icoSalade); break;
+                                case carotte: tabJLabel[x][y].setIcon(icoCarotte); break;
+                            }
                         }
-
                     } else {
                         tabJLabel[x][y].setIcon(icoTerre);
                     }
@@ -144,8 +157,6 @@ public class VueControleurPotager extends JFrame implements Observer {
                     // si transparence : images avec canal alpha + dessins manuels (voir ci-dessous + créer composant qui redéfinie paint(Graphics g)), se documenter
                     //BufferedImage bi = getImage("Images/smick.png", 0, 0, 20, 20);
                     //tabJLabel[x][y].getGraphics().drawImage(bi, 0, 0, null);
-                } else if (simulateurPotager.getPlateau()[x][y] instanceof CaseNonCultivable) {
-                    tabJLabel[x][y].setIcon(icoMur);
                 } else {
 
                     tabJLabel[x][y].setIcon(icoVide);

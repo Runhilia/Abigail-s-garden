@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class SimulateurPotager {
 
-    public static final int SIZE_X = 20;
+    public static final int SIZE_X = 10;
     public static final int SIZE_Y = 10;
 
     private SimulateurMeteo simMet;
@@ -40,8 +40,8 @@ public class SimulateurPotager {
 
         Random rnd = new Random();
 
-        for (int x = 5; x < 15; x++) {
-            for (int y = 3; y < 7; y++) {
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
                 CaseCultivable cc = new CaseCultivable(this);
                 addEntite(cc , x, y);
                 if (rnd.nextBoolean()) {

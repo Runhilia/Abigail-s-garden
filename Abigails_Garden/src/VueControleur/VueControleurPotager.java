@@ -1,6 +1,7 @@
 package VueControleur;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -83,16 +84,14 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     private void placerLesComposantsGraphiques() {
         setTitle("A vegetable garden");
-        setSize(540, 250);
+        setSize(500, 580);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
 
-        JPanel infos = new JPanel();
+        JPanel utilitaire = this.createNorthPanel();
+        JPanel infos = this.createSouthPanel();
 
-        JTextField jtf = new JTextField("infos diverses"); // TODO inclure dans mettreAJourAffichage ...
-        jtf.setEditable(false);
-        infos.add(jtf);
-
-        add(infos, BorderLayout.EAST);
+        add(infos, BorderLayout.SOUTH);
+        add(utilitaire, BorderLayout.NORTH);
 
 
 
@@ -215,6 +214,120 @@ public class VueControleurPotager extends JFrame implements Observer {
         }
         BufferedImage bi = image.getSubimage(x, y, w, h);
         return bi;
+    }
+
+    public JPanel createNorthPanel() {
+        JPanel utilitaire = new JPanel();
+        JPanel utilitaireOutils = new JPanel();
+        JPanel utilitaireTemps = new JPanel();
+
+        utilitaireOutils.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 0, 5, 0);
+        gbc.gridx=0;
+        JButton arrosoir = this.ajoutBouton("Images/arrosoir");
+        utilitaireOutils.add(arrosoir, gbc);
+
+        gbc.gridx=1;
+        JButton outil = this.ajoutBouton("Images/outil");
+        utilitaireOutils.add(outil, gbc);
+
+        gbc.gridx=2;
+        JButton infoPlante = this.ajoutBouton("Images/info");
+        utilitaireOutils.add(infoPlante, gbc);
+
+
+        JComboBox<ImageIcon> graine = new JComboBox<ImageIcon>();
+        graine.addItem(chargerIcone("Images/data.png", 390, 393, 120, 120));
+        graine.addItem(chargerIcone("Images/data.png", 0, 0, 120, 120));
+
+        gbc.gridx=3;
+        utilitaireOutils.add(graine, gbc);
+        utilitaire.add(utilitaireOutils);
+
+
+        /** Panel de temps **/
+        utilitaireTemps.setLayout(new GridBagLayout());
+        GridBagConstraints gbcTemps = new GridBagConstraints();
+
+        gbcTemps.insets = new Insets(5, 0, 5, 0);
+        gbcTemps.gridx=0;
+        JButton ralTemps = this.ajoutBouton("Images/ral");
+        utilitaireTemps.add(ralTemps, gbcTemps);
+
+        gbcTemps.gridx=1;
+        JButton pauseTemps = this.ajoutBouton("Images/pause");
+        utilitaireTemps.add(pauseTemps, gbcTemps);
+
+        gbcTemps.gridx=2;
+        JButton accTemps = this.ajoutBouton("Images/acc");
+        utilitaireTemps.add(accTemps, gbcTemps);
+
+        utilitaire.add(utilitaireTemps);
+
+        return utilitaire;
+    }
+
+    public JPanel createSouthPanel(){
+        JPanel infos = new JPanel();
+        JPanel general = new JPanel();
+        JPanel inventaire = new JPanel();
+
+        /** Panel general **/
+        GridBagConstraints gbcGeneral = new GridBagConstraints();
+        gbcGeneral.insets = new Insets(5, 3, 5, 3);
+        gbcGeneral.gridx=0;
+        JLabel temps = new JLabel();
+        temps.setIcon(new ImageIcon("Images/Pacman.png"));
+        general.add(temps, gbcGeneral);
+
+        gbcGeneral.gridx=1;
+        JLabel temperature = new JLabel();
+        temperature.setIcon(new ImageIcon("Images/Pacman.png"));
+        general.add(temperature, gbcGeneral);
+
+        gbcGeneral.gridx=2;
+        JLabel humidite = new JLabel();
+        humidite.setIcon(new ImageIcon("Images/Pacman.png"));
+        general.add(humidite, gbcGeneral);
+
+        infos.add(general);
+
+        /** Panel Inventaire **/
+//        JButton inven = this.ajoutBouton("Images/Pacman.png");
+//        inventaire.add(inven);
+        infos.add(inventaire);
+
+        return infos;
+    }
+
+    /**
+     * Ajout d'un boutton avec une icone
+     * @param urlIcone
+     * @return
+     */
+    public JButton ajoutBouton(String urlIcone) {
+        JButton button = new JButton();
+        ImageIcon iconBase = new ImageIcon(urlIcone+"Base.png");
+        ImageIcon iconClick = new ImageIcon(urlIcone+"Click.png");
+        button.setIcon(iconBase);
+        button.setBounds(0, 0, 0, 10);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(button.getIcon() == iconBase) {
+                    button.setIcon(iconClick);
+                } else {
+                    button.setIcon(iconBase);
+                }
+                System.out.println("Bouton cliqué");
+            }
+        });
+
+        return button;
     }
 
 }

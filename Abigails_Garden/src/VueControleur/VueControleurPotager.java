@@ -86,6 +86,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         setTitle("A vegetable garden");
         setSize(500, 580);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
+        setResizable(false);
 
         JPanel utilitaire = this.createNorthPanel();
         JPanel infos = this.createSouthPanel();
@@ -129,8 +130,7 @@ public class VueControleurPotager extends JFrame implements Observer {
     /**
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
      */
-    private void mettreAJourAffichage() {
-
+    private void mettreAJourAffichage() throws IOException {
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
                 if (simulateurPotager.getPlateau()[x][y] instanceof CaseCultivable) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
@@ -138,17 +138,28 @@ public class VueControleurPotager extends JFrame implements Observer {
                     Legume legume = ((CaseCultivable) simulateurPotager.getPlateau()[x][y]).getLegume();
 
                     if (legume != null) {
+                        JLabel fond = new JLabel();
+                        fond.setIcon(icoTerre);
+                        ImageIcon iconPlante= null;
+
                         if(legume.getEtatLegume() == EtatLegume.graine) {
-                            tabJLabel[x][y].setIcon(icoGraine);
+                            iconPlante = icoGraine;
+
                         } else if(legume.getEtatLegume() == EtatLegume.pousse) {
-                            tabJLabel[x][y].setIcon(icoPousse);
+                            iconPlante = icoPousse;
                         } else
                         {
                             switch (legume.getVariete()) {
-                                case salade: tabJLabel[x][y].setIcon(icoSalade); break;
-                                case carotte: tabJLabel[x][y].setIcon(icoCarotte); break;
+                                case salade:
+                                    iconPlante = icoSalade;
+                                    break;
+                                case carotte:
+                                    iconPlante = icoCarotte;
+                                    break;
                             }
                         }
+                        tabJLabel[x][y].setIcon(iconPlante);
+                        tabJLabel[x][y].add(fond);
                     } else {
                         tabJLabel[x][y].setIcon(icoTerre);
                     }
@@ -166,7 +177,11 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        mettreAJourAffichage();
+        try {
+            mettreAJourAffichage();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         /*
         SwingUtilities.invokeLater(new Runnable() {
                     @Override
@@ -278,17 +293,23 @@ public class VueControleurPotager extends JFrame implements Observer {
         gbcGeneral.insets = new Insets(5, 3, 5, 3);
         gbcGeneral.gridx=0;
         JLabel temps = new JLabel();
-        temps.setIcon(new ImageIcon("Images/Pacman.png"));
+        temps.setIcon(new ImageIcon("Images/soleil.png"));
         general.add(temps, gbcGeneral);
 
         gbcGeneral.gridx=1;
-        JLabel temperature = new JLabel();
-        temperature.setIcon(new ImageIcon("Images/Pacman.png"));
+        JLabel temperature = new JLabel("7°");
+        temperature.setIcon(new ImageIcon("Images/boutonFond.png"));
+        temperature.setHorizontalTextPosition(SwingConstants.CENTER);
+        temperature.setForeground(Color.orange);
+        temperature.setFont(new Font("Arial", Font.BOLD, 20));
         general.add(temperature, gbcGeneral);
 
         gbcGeneral.gridx=2;
-        JLabel humidite = new JLabel();
-        humidite.setIcon(new ImageIcon("Images/Pacman.png"));
+        JLabel humidite = new JLabel("50%");
+        humidite.setIcon(new ImageIcon("Images/boutonFond.png"));
+        humidite.setHorizontalTextPosition(SwingConstants.CENTER);
+        humidite.setForeground(Color.orange);
+        humidite.setFont(new Font("Arial", Font.BOLD, 15));
         general.add(humidite, gbcGeneral);
 
         infos.add(general);

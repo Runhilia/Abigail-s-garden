@@ -1,5 +1,6 @@
 package modele.environnement;
 
+import modele.Inventaire;
 import modele.SimulateurPotager;
 import modele.environnement.varietes.*;
 
@@ -11,16 +12,32 @@ public class CaseCultivable extends Case {
     }
 
     @Override
-    public void actionUtilisateur() {
-        if (legume == null) {
-            legume = new Carotte();
+    public void actionUtilisateur(Action typeAction) {
+        Inventaire inventaire = Inventaire.getInventaire();
+        switch(typeAction){
+            case RECOLTER :
+                if(legume != null) {
+                    if (legume.getVariete().equals(Varietes.carotte))
+                        inventaire.addCarotte(1);
+                    else if (legume.getVariete().equals(Varietes.salade))
+                        inventaire.addSalade(1);
+                    System.out.println(inventaire.toString());
+                    legume = null;
+                }
+                    break;
+                    case PLANTER:
+                        if (legume == null)
+                            legume = new Carotte();
+                        break;
+                    case ARROSER:
+                        break;
+                    default:
+                        break;
 
-        } else {
-            legume = null;
+                }
         }
-    }
 
-    public Legume getLegume() {
+        public Legume getLegume() {
         return legume;
     }
 

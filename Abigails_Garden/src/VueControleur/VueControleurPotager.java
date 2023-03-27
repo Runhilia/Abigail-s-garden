@@ -16,6 +16,7 @@ import javax.swing.*;
 
 import modele.SimulateurPotager;
 import modele.environnement.*;
+import modele.environnement.Action;
 import modele.environnement.varietes.EtatLegume;
 import modele.environnement.varietes.Legume;
 
@@ -42,6 +43,12 @@ public class VueControleurPotager extends JFrame implements Observer {
 
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
+    private JButton arrosoir;
+    private JButton outil;
+    private JButton infoPlante;
+    private JButton ralTemps;
+    private JButton pauseTemps;
+    private JButton accTemps;
 
 
     public VueControleurPotager(SimulateurPotager _simulateurPotager) {
@@ -119,7 +126,8 @@ public class VueControleurPotager extends JFrame implements Observer {
                 tabJLabel[x][y].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        simulateurPotager.actionUtilisateur(xx, yy);
+                        if(outil.isEnabled()) //toujours true
+                            simulateurPotager.actionUtilisateur(xx, yy, Action.RECOLTER);
                     }
                 });
             }
@@ -240,15 +248,16 @@ public class VueControleurPotager extends JFrame implements Observer {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 0, 5, 0);
         gbc.gridx=0;
-        JButton arrosoir = this.ajoutBouton("Images/arrosoir");
+        arrosoir = this.ajoutBouton("Images/arrosoir");
         utilitaireOutils.add(arrosoir, gbc);
 
         gbc.gridx=1;
-        JButton outil = this.ajoutBouton("Images/outil");
+        outil = this.ajoutBouton("Images/outil");
+
         utilitaireOutils.add(outil, gbc);
 
         gbc.gridx=2;
-        JButton infoPlante = this.ajoutBouton("Images/info");
+        infoPlante = this.ajoutBouton("Images/info");
         utilitaireOutils.add(infoPlante, gbc);
 
 
@@ -267,15 +276,15 @@ public class VueControleurPotager extends JFrame implements Observer {
 
         gbcTemps.insets = new Insets(5, 0, 5, 0);
         gbcTemps.gridx=0;
-        JButton ralTemps = this.ajoutBouton("Images/ral");
+        ralTemps = this.ajoutBouton("Images/ral");
         utilitaireTemps.add(ralTemps, gbcTemps);
 
         gbcTemps.gridx=1;
-        JButton pauseTemps = this.ajoutBouton("Images/pause");
+        pauseTemps = this.ajoutBouton("Images/pause");
         utilitaireTemps.add(pauseTemps, gbcTemps);
 
         gbcTemps.gridx=2;
-        JButton accTemps = this.ajoutBouton("Images/acc");
+        accTemps = this.ajoutBouton("Images/acc");
         utilitaireTemps.add(accTemps, gbcTemps);
 
         utilitaire.add(utilitaireTemps);
@@ -344,7 +353,6 @@ public class VueControleurPotager extends JFrame implements Observer {
                 } else {
                     button.setIcon(iconBase);
                 }
-                System.out.println("Bouton cliqué");
             }
         });
 

@@ -18,7 +18,7 @@ public abstract class Case implements Runnable {
         simulateurPotager = _simulateurPotager;
     }
 
-    public abstract void actionUtilisateur();
+    public abstract void actionUtilisateur(Action typeAction);
 
 
   }

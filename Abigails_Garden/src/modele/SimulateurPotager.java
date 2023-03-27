@@ -6,6 +6,7 @@
 package modele;
 
 
+import modele.environnement.Action;
 import modele.environnement.Case;
 import modele.environnement.CaseCultivable;
 
@@ -45,7 +46,7 @@ public class SimulateurPotager {
                 CaseCultivable cc = new CaseCultivable(this);
                 addEntite(cc , x, y);
                 if (rnd.nextBoolean()) {
-                    cc.actionUtilisateur();
+                    cc.actionUtilisateur(Action.PLANTER);
                 }
 
                 Ordonnanceur.getOrdonnanceur().add(cc);
@@ -55,9 +56,9 @@ public class SimulateurPotager {
 
     }
 
-    public void actionUtilisateur(int x, int y) {
+    public void actionUtilisateur(int x, int y, Action typeAction) {
         if (grilleCases[x][y] != null) {
-            grilleCases[x][y].actionUtilisateur();
+            grilleCases[x][y].actionUtilisateur(typeAction);
         }
     }
 

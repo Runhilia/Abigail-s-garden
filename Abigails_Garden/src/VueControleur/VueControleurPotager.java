@@ -1,15 +1,12 @@
 package VueControleur;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -17,9 +14,11 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import modele.SimulateurDate;
 import modele.SimulateurPotager;
 import modele.environnement.*;
 import modele.environnement.Action;
+import modele.environnement.meteo.SimulateurMeteo;
 import modele.environnement.varietes.*;
 
 
@@ -30,6 +29,7 @@ import modele.environnement.varietes.*;
  */
 public class VueControleurPotager extends JFrame implements Observer {
     private SimulateurPotager simulateurPotager; // référence sur une classe de modèle : permet d'accéder aux données du modèle pour le rafraichissement, permet de communiquer les actions clavier (ou souris)
+    private SimulateurMeteo simulateurMeteo;
 
     // taille de la grille affichée
     private int sizeX;
@@ -56,11 +56,16 @@ public class VueControleurPotager extends JFrame implements Observer {
     private Button pauseTemps;
     private Button accTemps;
 
+    private JLabel momentJournee = new JLabel();
+    private JLabel meteo = new JLabel();
+    private JLabel affichageDate = new JLabel();
+
 
     public VueControleurPotager(SimulateurPotager _simulateurPotager) {
         sizeX = _simulateurPotager.SIZE_X;
         sizeY = _simulateurPotager.SIZE_Y;
         simulateurPotager = _simulateurPotager;
+        simulateurMeteo = new SimulateurMeteo(simulateurPotager);
 
         chargerLesIcones();
         placerLesComposantsGraphiques();
@@ -150,7 +155,11 @@ public class VueControleurPotager extends JFrame implements Observer {
         }
     }
 
-    
+    public void afficherDate(){
+        SimulateurDate date = new SimulateurDate();
+        affichageDate.setText(date.getDateString()); // On affiche la date
+    }
+
     /**
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
      */
@@ -178,9 +187,40 @@ public class VueControleurPotager extends JFrame implements Observer {
                         tabJLabel[x][y].getGraphics().drawImage(iconPlante.getImage(), 10, 10, null);
                     } else
                         tabJLabel[x][y].getGraphics().drawImage(icoTerre.getImage(), 0, 0, null);
-
                 } else
                     tabJLabel[x][y].getGraphics().drawImage(icoVide.getImage(), 0, 0, null);
+            }
+        }
+    }
+
+    public void mettreAJourInterface(){
+        switch(simulateurMeteo.getCalcMomentJournee()){
+            case MATIN -> {
+                momentJournee.setIcon(new ImageIcon("Images/matin.png"));
+            }
+            case JOURNEE -> {
+                momentJournee.setIcon(new ImageIcon("Images/soleil.png"));
+            }
+            case SOIR -> {
+                momentJournee.setIcon(new ImageIcon("Images/soir.png"));
+            }
+            case NUIT -> {
+                momentJournee.setIcon(new ImageIcon("Images/nuit.png"));
+            }
+        }
+
+        switch (simulateurMeteo.getCalcEtatMeteo()) {
+            case SOLEIL -> {
+                meteo.setIcon(new ImageIcon("Images/soleil.png"));
+            }
+            case PLUIE -> {
+                meteo.setIcon(new ImageIcon("Images/pluie.png"));
+            }
+            case ECLAIRCIES -> {
+                meteo.setIcon(new ImageIcon("Images/soleilNuage.png"));
+            }
+            case NUAGE -> {
+                meteo.setIcon(new ImageIcon("Images/nuage.png"));
             }
         }
     }
@@ -189,6 +229,8 @@ public class VueControleurPotager extends JFrame implements Observer {
     public void update(Observable o, Object arg) {
         try {
             mettreAJourAffichage();
+            mettreAJourInterface();
+            afficherDate();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -214,7 +256,6 @@ public class VueControleurPotager extends JFrame implements Observer {
             Logger.getLogger(VueControleurPotager.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-
 
         return new ImageIcon(image);
     }
@@ -306,15 +347,23 @@ public class VueControleurPotager extends JFrame implements Observer {
         JPanel general = new JPanel();
         JPanel inventaire = new JPanel();
 
-        /** Panel general **/
+        // Panel général
         GridBagConstraints gbcGeneral = new GridBagConstraints();
         gbcGeneral.insets = new Insets(5, 3, 5, 3);
+
         gbcGeneral.gridx=0;
-        JLabel temps = new JLabel();
-        temps.setIcon(new ImageIcon("Images/soleil.png"));
-        general.add(temps, gbcGeneral);
+        momentJournee.setIcon(new ImageIcon("Images/matin.png"));
+        general.add(momentJournee, gbcGeneral);
 
         gbcGeneral.gridx=1;
+        general.add(affichageDate, gbcGeneral);
+
+        gbcGeneral.gridx=2;
+        meteo.setIcon(new ImageIcon("Images/soleil.png"));
+        general.add(meteo, gbcGeneral);
+
+
+        gbcGeneral.gridx=3;
         JLabel temperature = new JLabel("7°");
         temperature.setIcon(new ImageIcon("Images/boutonFond.png"));
         temperature.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -322,7 +371,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         temperature.setFont(new Font("Arial", Font.BOLD, 20));
         general.add(temperature, gbcGeneral);
 
-        gbcGeneral.gridx=2;
+        gbcGeneral.gridx=4;
         JLabel humidite = new JLabel("50%");
         humidite.setIcon(new ImageIcon("Images/boutonFond.png"));
         humidite.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -379,5 +428,4 @@ public class VueControleurPotager extends JFrame implements Observer {
         pauseTemps.setIcon(new ImageIcon("Images/pauseBase.png"));
         accTemps.setIcon(new ImageIcon("Images/accBase.png"));
     }
-
 }

@@ -23,8 +23,6 @@ public class Ordonnanceur extends Observable implements Runnable {
     private Vector<Runnable> lst = new Vector<Runnable>(); // liste synchronisée
 
 
-
-
     public void start(long _pause) {
         pause = _pause;
         new Thread(this).start();
@@ -54,9 +52,6 @@ public class Ordonnanceur extends Observable implements Runnable {
                 e.printStackTrace();
             }
         }
-
-
-
     }
 
     /**

@@ -7,12 +7,10 @@ package modele;
 
 
 import modele.environnement.Action;
-import modele.environnement.Case;
-import modele.environnement.CaseCultivable;
-import modele.environnement.varietes.*;
+import modele.environnement.*;
+import modele.environnement.meteo.SimulateurMeteo;
 
 import java.awt.Point;
-import java.util.Random;
 
 
 public class SimulateurPotager {
@@ -30,18 +28,10 @@ public class SimulateurPotager {
         simMet = new SimulateurMeteo(this);
     }
 
-    /**
-     * Définit le légume sélectionné
-     * @param legumeSelectionne le légume sélectionné
-     */
     public void setLegumeSelectionne(String legumeSelectionne) {
         this.legumeSelectionne = legumeSelectionne;
     }
 
-    /**
-     * Récupère le légume sélectionné
-     * @return le légume sélectionné
-     */
     public String getLegumeSelectionne() {
         return legumeSelectionne;
     }

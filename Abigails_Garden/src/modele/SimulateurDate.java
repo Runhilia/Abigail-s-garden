@@ -55,6 +55,13 @@ public class SimulateurDate {
     }
 
     /**
+     * @return La minute actuelle
+     */
+    public int getMinute() {
+        return minute;
+    }
+
+    /**
      * Convertit la date en minute
      * @return int
      */

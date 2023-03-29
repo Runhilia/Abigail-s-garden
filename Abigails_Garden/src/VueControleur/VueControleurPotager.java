@@ -49,12 +49,12 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     // Composants graphiques
     private JLabel[][] tabJLabel; // cases graphiques (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
-    private JButton arrosoir;
-    private JButton outil;
-    private JButton infoPlante;
-    private JButton ralTemps;
-    private JButton pauseTemps;
-    private JButton accTemps;
+    private Button arrosoir;
+    private Button outil;
+    private Button infoPlante;
+    private Button ralTemps;
+    private Button pauseTemps;
+    private Button accTemps;
 
 
     public VueControleurPotager(SimulateurPotager _simulateurPotager) {
@@ -99,7 +99,7 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     private void placerLesComposantsGraphiques() {
         setTitle("A vegetable garden");
-        setSize(500, 580);
+        setSize(500, 585);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
         setResizable(false);
 
@@ -134,8 +134,16 @@ public class VueControleurPotager extends JFrame implements Observer {
                 tabJLabel[x][y].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        if(outil.isEnabled()) //toujours true
+                        if(outil.isActif()){
                             simulateurPotager.actionUtilisateur(xx, yy, Action.RECOLTER);
+                            tabJLabel[xx][yy].getGraphics().clearRect(0,0,50,50);
+                            tabJLabel[xx][yy].getGraphics().drawImage(icoTerre.getImage(), 0, 0, null);
+
+                        }else if(arrosoir.isActif()){
+                            simulateurPotager.actionUtilisateur(xx, yy, Action.ARROSER);
+                        }else
+                            simulateurPotager.actionUtilisateur(xx, yy, Action.PLANTER);
+
                     }
                 });
             }
@@ -147,8 +155,6 @@ public class VueControleurPotager extends JFrame implements Observer {
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
      */
     private void mettreAJourAffichage() throws IOException {
-        JLabel fond = new JLabel();
-        fond.setIcon(icoTerre);
         ImageIcon iconPlante= null;
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
@@ -162,26 +168,19 @@ public class VueControleurPotager extends JFrame implements Observer {
 
                         } else if(legume.getEtatLegume() == EtatLegume.pousse) {
                             iconPlante = icoPousse;
-                        } else
-                        {
+                        } else {
                             iconPlante = switch (legume.getVariete()) {
                                 case salade -> icoSalade;
                                 case carotte -> icoCarotte;
                             };
                         }
-                        tabJLabel[x][y].setIcon(iconPlante);
-                        tabJLabel[x][y].add(fond);
-                    } else {
-                        tabJLabel[x][y].setIcon(icoTerre);
-                    }
+                        tabJLabel[x][y].getGraphics().drawImage(icoTerre.getImage(), 0, 0, null);
+                        tabJLabel[x][y].getGraphics().drawImage(iconPlante.getImage(), 10, 10, null);
+                    } else
+                        tabJLabel[x][y].getGraphics().drawImage(icoTerre.getImage(), 0, 0, null);
 
-                    // si transparence : images avec canal alpha + dessins manuels (voir ci-dessous + créer composant qui redéfinie paint(Graphics g)), se documenter
-                    //BufferedImage bi = getImage("Images/smick.png", 0, 0, 20, 20);
-                    //tabJLabel[x][y].getGraphics().drawImage(bi, 0, 0, null);
-                } else {
-
-                    tabJLabel[x][y].setIcon(icoVide);
-                }
+                } else
+                    tabJLabel[x][y].getGraphics().drawImage(icoVide.getImage(), 0, 0, null);
             }
         }
     }
@@ -334,7 +333,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         infos.add(general);
 
         /** Panel Inventaire **/
-//        JButton inven = this.ajoutBouton("Images/Pacman.png");
+//        Button inven = this.ajoutBouton("Images/Pacman.png");
 //        inventaire.add(inven);
         infos.add(inventaire);
 
@@ -346,8 +345,8 @@ public class VueControleurPotager extends JFrame implements Observer {
      * @param urlIcone
      * @return
      */
-    public JButton ajoutBouton(String urlIcone) {
-        JButton button = new JButton();
+    public Button ajoutBouton(String urlIcone) {
+        Button button = new Button();
         ImageIcon iconBase = new ImageIcon(urlIcone+"Base.png");
         ImageIcon iconClick = new ImageIcon(urlIcone+"Click.png");
         button.setIcon(iconBase);
@@ -360,9 +359,11 @@ public class VueControleurPotager extends JFrame implements Observer {
             public void mouseClicked(MouseEvent e) {
                 if(button.getIcon().toString().equals(iconClick.toString())) {
                     button.setIcon(iconBase);
+                    button.setActif(false);
                 } else {
                     deselectionnerBoutons();
                     button.setIcon(iconClick);
+                    button.setActif(true);
                 }
             }
         });

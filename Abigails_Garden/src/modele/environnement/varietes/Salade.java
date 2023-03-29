@@ -19,7 +19,7 @@ public class Salade extends Legume {
     @Override
     protected void croissance() {
         int heureActuelle = new SimulateurDate().convertTempsVersMinute();
-        int heureFinPousse = heurePlantation.convertTempsVersMinute() + tempsPousse * 60;
+        double heureFinPousse = heurePlantation.convertTempsVersMinute() + tempsPousse * 60;
 
         if(heureActuelle == heurePlantation.convertTempsVersMinute() + (tempsPousse * 60) / 5)
         {

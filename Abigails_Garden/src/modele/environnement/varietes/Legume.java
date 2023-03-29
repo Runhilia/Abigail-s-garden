@@ -5,7 +5,7 @@ import modele.SimulateurDate;
 public abstract class Legume {
 
     protected EtatLegume etatLegume;
-    protected int tempsPousse; // Temps de pousse d'un légume en heures réelles
+    protected double tempsPousse; // Temps de pousse d'un légume en heures réelles
     protected SimulateurDate heurePlantation; // Heure de plantation du légume
 
     /**

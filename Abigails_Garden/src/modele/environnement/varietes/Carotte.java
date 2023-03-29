@@ -6,7 +6,7 @@ public class Carotte extends Legume {
 
     public Carotte() {
         super();
-        tempsPousse = 3;
+        tempsPousse = 0.5;
         System.out.println("Carotte plantée " + heurePlantation.getDateString());
     }
     @Override
@@ -17,7 +17,7 @@ public class Carotte extends Legume {
     @Override
     protected void croissance() {
         int heureActuelle = new SimulateurDate().convertTempsVersMinute();
-        int heureFinPousse = heurePlantation.convertTempsVersMinute() + tempsPousse * 60;
+        double heureFinPousse =  heurePlantation.convertTempsVersMinute() + tempsPousse * 60;
 
         if(heureActuelle == heurePlantation.convertTempsVersMinute() + (tempsPousse * 60) / 5)
         {

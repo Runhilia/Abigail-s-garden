@@ -93,8 +93,8 @@ public class VueControleurPotager extends JFrame implements Observer {
         icoVide = chargerIcone("Images/Vide.png");
         icoMur = chargerIcone("Images/Mur.png");
         icoTerre = chargerIcone("Images/Terre.png");
-        icoGraine = chargerIcone("Images/Fantome.png");
-        icoPousse = chargerIcone("Images/Pacman.png");
+        icoGraine = chargerIcone("Images/graine.png");
+        icoPousse = chargerIcone("Images/pousse.png");
     }
 
     private void placerLesComposantsGraphiques() {
@@ -147,6 +147,9 @@ public class VueControleurPotager extends JFrame implements Observer {
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
      */
     private void mettreAJourAffichage() throws IOException {
+        JLabel fond = new JLabel();
+        fond.setIcon(icoTerre);
+        ImageIcon iconPlante= null;
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
                 if (simulateurPotager.getPlateau()[x][y] instanceof CaseCultivable) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
@@ -154,10 +157,6 @@ public class VueControleurPotager extends JFrame implements Observer {
                     Legume legume = ((CaseCultivable) simulateurPotager.getPlateau()[x][y]).getLegume();
 
                     if (legume != null) {
-                        JLabel fond = new JLabel();
-                        fond.setIcon(icoTerre);
-                        ImageIcon iconPlante= null;
-
                         if(legume.getEtatLegume() == EtatLegume.graine) {
                             iconPlante = icoGraine;
 

@@ -1,12 +1,15 @@
 package VueControleur;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -17,8 +20,7 @@ import javax.swing.*;
 import modele.SimulateurPotager;
 import modele.environnement.*;
 import modele.environnement.Action;
-import modele.environnement.varietes.EtatLegume;
-import modele.environnement.varietes.Legume;
+import modele.environnement.varietes.*;
 
 
 /** Cette classe a deux fonctions :
@@ -29,20 +31,24 @@ import modele.environnement.varietes.Legume;
 public class VueControleurPotager extends JFrame implements Observer {
     private SimulateurPotager simulateurPotager; // référence sur une classe de modèle : permet d'accéder aux données du modèle pour le rafraichissement, permet de communiquer les actions clavier (ou souris)
 
-    private int sizeX; // taille de la grille affichée
+    // taille de la grille affichée
+    private int sizeX;
     private int sizeY;
 
     // icones affichées dans la grille
-    private ImageIcon icoSalade;
-    private ImageIcon icoCarotte;
     private ImageIcon icoTerre;
     private ImageIcon icoVide;
     private ImageIcon icoMur;
     private ImageIcon icoGraine;
     private ImageIcon icoPousse;
+    private ImageIcon icoSalade;
+    private ImageIcon icoCarotte;
 
 
-    private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
+    private HashMap<ImageIcon,String> mapLegumeIcone = new HashMap<ImageIcon,String>(); // permet de récupérer le nom du légume grâce à l'icône
+
+    // Composants graphiques
+    private JLabel[][] tabJLabel; // cases graphiques (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
     private JButton arrosoir;
     private JButton outil;
     private JButton infoPlante;
@@ -52,7 +58,7 @@ public class VueControleurPotager extends JFrame implements Observer {
 
 
     public VueControleurPotager(SimulateurPotager _simulateurPotager) {
-        sizeX = simulateurPotager.SIZE_X;
+        sizeX = _simulateurPotager.SIZE_X;
         sizeY = _simulateurPotager.SIZE_Y;
         simulateurPotager = _simulateurPotager;
 
@@ -81,7 +87,9 @@ public class VueControleurPotager extends JFrame implements Observer {
     
 
         icoSalade = chargerIcone("Images/data.png", 0, 0, 120, 120);
+        mapLegumeIcone.put(icoSalade,"Salade");
         icoCarotte = chargerIcone("Images/data.png", 390, 393, 120, 120);
+        mapLegumeIcone.put(icoCarotte,"Carotte");
         icoVide = chargerIcone("Images/Vide.png");
         icoMur = chargerIcone("Images/Mur.png");
         icoTerre = chargerIcone("Images/Terre.png");
@@ -157,14 +165,10 @@ public class VueControleurPotager extends JFrame implements Observer {
                             iconPlante = icoPousse;
                         } else
                         {
-                            switch (legume.getVariete()) {
-                                case salade:
-                                    iconPlante = icoSalade;
-                                    break;
-                                case carotte:
-                                    iconPlante = icoCarotte;
-                                    break;
-                            }
+                            iconPlante = switch (legume.getVariete()) {
+                                case salade -> icoSalade;
+                                case carotte -> icoCarotte;
+                            };
                         }
                         tabJLabel[x][y].setIcon(iconPlante);
                         tabJLabel[x][y].add(fond);
@@ -261,12 +265,19 @@ public class VueControleurPotager extends JFrame implements Observer {
         utilitaireOutils.add(infoPlante, gbc);
 
 
-        JComboBox<ImageIcon> graine = new JComboBox<ImageIcon>();
-        graine.addItem(chargerIcone("Images/data.png", 390, 393, 120, 120));
-        graine.addItem(chargerIcone("Images/data.png", 0, 0, 120, 120));
+        JComboBox<ImageIcon> graines = new JComboBox<ImageIcon>();
+        graines.addItem(chargerIcone("Images/data.png", 390, 393, 120, 120));
+        graines.addItem(chargerIcone("Images/data.png", 0, 0, 120, 120));
+
+        // Ajout d'un listener qui permet de récupérer le légume sélectionné
+        graines.addActionListener(e -> {
+            JComboBox cb = (JComboBox)e.getSource();
+            ImageIcon icon = (ImageIcon)cb.getSelectedItem();
+            simulateurPotager.setLegumeSelectionne(mapLegumeIcone.get(icon));
+        });
 
         gbc.gridx=3;
-        utilitaireOutils.add(graine, gbc);
+        utilitaireOutils.add(graines, gbc);
         utilitaire.add(utilitaireOutils);
 
 
@@ -348,15 +359,25 @@ public class VueControleurPotager extends JFrame implements Observer {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(button.getIcon() == iconBase) {
-                    button.setIcon(iconClick);
-                } else {
+                if(button.getIcon().toString().equals(iconClick.toString())) {
                     button.setIcon(iconBase);
+                } else {
+                    deselectionnerBoutons();
+                    button.setIcon(iconClick);
                 }
             }
         });
 
         return button;
+    }
+
+    public void deselectionnerBoutons() {
+        arrosoir.setIcon(new ImageIcon("Images/arrosoirBase.png"));
+        outil.setIcon(new ImageIcon("Images/outilBase.png"));
+        infoPlante.setIcon(new ImageIcon("Images/infoBase.png"));
+        ralTemps.setIcon(new ImageIcon("Images/ralBase.png"));
+        pauseTemps.setIcon(new ImageIcon("Images/pauseBase.png"));
+        accTemps.setIcon(new ImageIcon("Images/accBase.png"));
     }
 
 }

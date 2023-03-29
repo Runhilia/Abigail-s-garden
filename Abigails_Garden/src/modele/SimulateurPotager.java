@@ -9,6 +9,7 @@ package modele;
 import modele.environnement.Action;
 import modele.environnement.Case;
 import modele.environnement.CaseCultivable;
+import modele.environnement.varietes.*;
 
 import java.awt.Point;
 import java.util.Random;
@@ -18,20 +19,32 @@ public class SimulateurPotager {
 
     public static final int SIZE_X = 10;
     public static final int SIZE_Y = 10;
-
+    private String legumeSelectionne = "Carotte";
     private SimulateurMeteo simMet;
-
-    // private HashMap<Case, Point> map = new  HashMap<Case, Point>(); // permet de récupérer la position d'une entité à partir de sa référence
     private Case[][] grilleCases = new Case[SIZE_X][SIZE_Y]; // permet de récupérer une entité à partir de ses coordonnées
+
     public SimulateurPotager() {
 
         initialisationDesEntites();
 
         simMet = new SimulateurMeteo(this);
-
     }
 
+    /**
+     * Définit le légume sélectionné
+     * @param legumeSelectionne le légume sélectionné
+     */
+    public void setLegumeSelectionne(String legumeSelectionne) {
+        this.legumeSelectionne = legumeSelectionne;
+    }
 
+    /**
+     * Récupère le légume sélectionné
+     * @return le légume sélectionné
+     */
+    public String getLegumeSelectionne() {
+        return legumeSelectionne;
+    }
     
     public Case[][] getPlateau() {
         return grilleCases;
@@ -39,18 +52,12 @@ public class SimulateurPotager {
     
     private void initialisationDesEntites() {
 
-        Random rnd = new Random();
-
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
                 CaseCultivable cc = new CaseCultivable(this);
                 addEntite(cc , x, y);
-                if (rnd.nextBoolean()) {
-                    cc.actionUtilisateur(Action.PLANTER);
-                }
 
                 Ordonnanceur.getOrdonnanceur().add(cc);
-
             }
         }
 

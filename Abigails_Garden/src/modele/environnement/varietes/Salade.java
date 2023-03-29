@@ -8,7 +8,8 @@ public class Salade extends Legume {
 
     public Salade() {
         super();
-        tempsPousse = 10;
+        tempsPousse = 5;
+        System.out.println("Salade plantée " + heurePlantation.getDateString());
     }
     @Override
     public Varietes getVariete() {

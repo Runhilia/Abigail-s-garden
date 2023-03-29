@@ -6,7 +6,7 @@ public class Carotte extends Legume {
 
     public Carotte() {
         super();
-        tempsPousse = 1;
+        tempsPousse = 3;
         System.out.println("Carotte plantée " + heurePlantation.getDateString());
     }
     @Override

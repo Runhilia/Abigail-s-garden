@@ -15,6 +15,7 @@ public abstract class Legume {
         etatLegume = EtatLegume.graine;
         heurePlantation = new SimulateurDate();
     }
+
     public abstract Varietes getVariete();
 
     public EtatLegume getEtatLegume() {

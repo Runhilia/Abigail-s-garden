@@ -47,7 +47,7 @@ public class Ordonnanceur extends Observable implements Runnable {
                 //update = false;
             }
 
-            //update = true; // TODO : variable à déporter pour découpler le raffraichissement de la simulation
+            //update = true; // TODO : variable à déporter pour découpler le rafraichissement de la simulation
             try {
                 sleep(pause);
             } catch (InterruptedException e) {

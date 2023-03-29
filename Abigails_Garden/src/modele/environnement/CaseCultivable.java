@@ -17,17 +17,23 @@ public class CaseCultivable extends Case {
         switch(typeAction){
             case RECOLTER :
                 if(legume != null) {
-                    if (legume.getVariete().equals(Varietes.carotte))
-                        inventaire.addCarotte(1);
-                    else if (legume.getVariete().equals(Varietes.salade))
-                        inventaire.addSalade(1);
+                    switch (legume.getVariete()) {
+                        case carotte -> inventaire.addCarotte(1);
+                        case salade -> inventaire.addSalade(1);
+                    }
                     System.out.println(inventaire.toString());
                     legume = null;
+
                 }
                     break;
                     case PLANTER:
                         if (legume == null)
-                            legume = new Carotte();
+                        {
+                            switch (simulateurPotager.getLegumeSelectionne()) {
+                                case "Carotte" -> legume = new Carotte();
+                                case "Salade" -> legume = new Salade();
+                            }
+                        }
                         break;
                     case ARROSER:
                         break;

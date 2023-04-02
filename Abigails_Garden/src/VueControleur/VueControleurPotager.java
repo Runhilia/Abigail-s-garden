@@ -116,6 +116,12 @@ public class VueControleurPotager extends JFrame implements Observer {
         add(infos, BorderLayout.SOUTH);
         add(utilitaire, BorderLayout.NORTH);
 
+        JDialog jd = new JDialog();
+        jd.setTitle("Informations sur la case");
+        jd.setSize(100, 100);
+        jd.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        jd.setResizable(false);
+
 
 
         JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases graphiques et les positionner sous la forme d'une grille
@@ -148,7 +154,43 @@ public class VueControleurPotager extends JFrame implements Observer {
 
                         }else if(arrosoir.isActif()){
                             simulateurPotager.actionUtilisateur(xx, yy, Action.ARROSER);
-                        }else
+                        }else if(infoPlante.isActif()){
+                            humide.setText(((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getHumide()+"%");
+                            humide.setIcon(new ImageIcon("Images/boutonFond.png"));
+                            humide.setHorizontalTextPosition(SwingConstants.CENTER);
+                            humide.setForeground(Color.orange);
+                            humide.setFont(new Font("Arial", Font.BOLD, 15));
+
+                            JPanel panel = new JPanel();
+                            JTextField variete = new JTextField("Variété : ");
+                            variete.setBorder(null);
+                            variete.setEditable(false);
+
+                            JLabel varieteLabel = new JLabel();
+                            Legume legumeCase = ((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getLegume();
+                            if(legumeCase != null){
+                                switch(legumeCase.getVariete()){
+                                    case salade:
+                                        varieteLabel.setIcon(icoSalade);
+                                        break;
+                                    case carotte:
+                                        varieteLabel.setIcon(icoCarotte);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+
+                            panel.add(variete);
+                            panel.add(varieteLabel);
+
+                            jd.add(humide, BorderLayout.CENTER);
+                            jd.add(panel, BorderLayout.SOUTH);
+                            jd.setVisible(true);
+
+
+                        }
+                        else
                             simulateurPotager.actionUtilisateur(xx, yy, Action.PLANTER);
 
                     }
@@ -373,13 +415,6 @@ public class VueControleurPotager extends JFrame implements Observer {
         temperature.setFont(new Font("Arial", Font.BOLD, 20));
         general.add(temperature, gbcGeneral);
 
-        gbcGeneral.gridx=4;
-        humide.setText("50%");
-        humide.setIcon(new ImageIcon("Images/boutonFond.png"));
-        humide.setHorizontalTextPosition(SwingConstants.CENTER);
-        humide.setForeground(Color.orange);
-        humide.setFont(new Font("Arial", Font.BOLD, 15));
-        general.add(humide, gbcGeneral);
 
         infos.add(general);
 
@@ -424,8 +459,11 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     public void deselectionnerBoutons() {
         arrosoir.setIcon(new ImageIcon("Images/arrosoirBase.png"));
+        arrosoir.setActif(false);
         outil.setIcon(new ImageIcon("Images/outilBase.png"));
+        outil.setActif(false);
         infoPlante.setIcon(new ImageIcon("Images/infoBase.png"));
+        infoPlante.setActif(false);
         ralTemps.setIcon(new ImageIcon("Images/ralBase.png"));
         pauseTemps.setIcon(new ImageIcon("Images/pauseBase.png"));
         accTemps.setIcon(new ImageIcon("Images/accBase.png"));

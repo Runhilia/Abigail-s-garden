@@ -59,6 +59,8 @@ public class VueControleurPotager extends JFrame implements Observer {
     private JLabel momentJournee = new JLabel();
     private JLabel meteo = new JLabel();
     private JLabel affichageDate = new JLabel();
+    private JLabel humide = new JLabel();
+    private JLabel temperature = new JLabel();
 
 
     public VueControleurPotager(SimulateurPotager _simulateurPotager) {
@@ -97,7 +99,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         mapLegumeIcone.put(icoCarotte,"Carotte");
         icoVide = chargerIcone("Images/Vide.png");
         icoMur = chargerIcone("Images/Mur.png");
-        icoTerre = chargerIcone("Images/Terre.png");
+        icoTerre = chargerIcone("Images/terreNORMAL.png");
         icoGraine = chargerIcone("Images/graine.png");
         icoPousse = chargerIcone("Images/pousse.png");
     }
@@ -170,7 +172,7 @@ public class VueControleurPotager extends JFrame implements Observer {
                 if (simulateurPotager.getPlateau()[x][y] instanceof CaseCultivable) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
 
                     Legume legume = ((CaseCultivable) simulateurPotager.getPlateau()[x][y]).getLegume();
-
+                    icoTerre = chargerIcone("Images/terre"+((CaseCultivable) simulateurPotager.getPlateau()[x][y]).getEtatTerre() +".png");
                     if (legume != null) {
                         if(legume.getEtatLegume() == EtatLegume.graine) {
                             iconPlante = icoGraine;
@@ -364,7 +366,7 @@ public class VueControleurPotager extends JFrame implements Observer {
 
 
         gbcGeneral.gridx=3;
-        JLabel temperature = new JLabel("7°");
+        temperature.setText("7°");
         temperature.setIcon(new ImageIcon("Images/boutonFond.png"));
         temperature.setHorizontalTextPosition(SwingConstants.CENTER);
         temperature.setForeground(Color.orange);
@@ -372,12 +374,12 @@ public class VueControleurPotager extends JFrame implements Observer {
         general.add(temperature, gbcGeneral);
 
         gbcGeneral.gridx=4;
-        JLabel humidite = new JLabel("50%");
-        humidite.setIcon(new ImageIcon("Images/boutonFond.png"));
-        humidite.setHorizontalTextPosition(SwingConstants.CENTER);
-        humidite.setForeground(Color.orange);
-        humidite.setFont(new Font("Arial", Font.BOLD, 15));
-        general.add(humidite, gbcGeneral);
+        humide.setText("50%");
+        humide.setIcon(new ImageIcon("Images/boutonFond.png"));
+        humide.setHorizontalTextPosition(SwingConstants.CENTER);
+        humide.setForeground(Color.orange);
+        humide.setFont(new Font("Arial", Font.BOLD, 15));
+        general.add(humide, gbcGeneral);
 
         infos.add(general);
 

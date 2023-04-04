@@ -10,8 +10,9 @@ public class CaseCultivable extends Case {
     public CaseCultivable(SimulateurPotager _simulateurPotager) {
         super(_simulateurPotager);
     }
-    int humide = 50;
+    int humidite = 50;
     EtatTerre etatTerre = EtatTerre.NORMAL;
+
     @Override
     public void actionUtilisateur(Action typeAction) {
         Inventaire inventaire = Inventaire.getInventaire();
@@ -37,7 +38,7 @@ public class CaseCultivable extends Case {
                         }
                         break;
                     case ARROSER:
-                        this.setHumideAvTaux(80);
+                        this.setHumiditeAvTaux(80);
                         break;
                     default:
                         break;
@@ -49,22 +50,22 @@ public class CaseCultivable extends Case {
         return legume;
     }
 
-    public int getHumide() {
-        return humide;
+    public int getHumidite() {
+        return humidite;
     }
 
-    public void setHumideAvTaux(int pourcentage) {
-        this.humide = pourcentage;
-        if(humide > 100) {
-            humide = 100;
+    public void setHumiditeAvTaux(int pourcentage) {
+        this.humidite = pourcentage;
+        if(humidite > 100) {
+            humidite = 100;
         }
         this.setEtatTerre();
     }
-    public void setHumideAvVal(int val, String operation) {
-        if(operation == "ajout" && humide < 100)
-            humide += val;
-	    else if (operation == "baisse" && humide>0)
-            humide -= val;
+    public void setHumiditeAvVal(int val, String operation) {
+        if(operation == "ajout" && humidite < 100)
+            humidite += val;
+	    else if (operation == "baisse" && humidite >0)
+            humidite -= val;
         this.setEtatTerre();
     }
 
@@ -73,9 +74,9 @@ public class CaseCultivable extends Case {
     }
 
     public void setEtatTerre() {
-        if (humide <= 30) {
+        if (humidite <= 20) {
             etatTerre = EtatTerre.SEC;
-        } else if (humide >= 70) {
+        } else if (humidite >= 70) {
             etatTerre = EtatTerre.HUMIDE;
         } else {
             etatTerre = EtatTerre.NORMAL;

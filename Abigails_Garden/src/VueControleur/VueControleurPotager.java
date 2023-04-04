@@ -155,7 +155,7 @@ public class VueControleurPotager extends JFrame implements Observer {
                         }else if(arrosoir.isActif()){
                             simulateurPotager.actionUtilisateur(xx, yy, Action.ARROSER);
                         }else if(infoPlante.isActif()){
-                            humide.setText(((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getHumide()+"%");
+                            humide.setText(((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getHumidite()+"%");
                             humide.setIcon(new ImageIcon("Images/boutonFond.png"));
                             humide.setHorizontalTextPosition(SwingConstants.CENTER);
                             humide.setForeground(Color.orange);
@@ -211,7 +211,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         ImageIcon iconPlante= null;
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                if (simulateurPotager.getPlateau()[x][y] instanceof CaseCultivable) { // si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
+                if (simulateurPotager.getPlateau()[x][y] instanceof CaseCultivable) { // si la case est cultivable
 
                     Legume legume = ((CaseCultivable) simulateurPotager.getPlateau()[x][y]).getLegume();
                     icoTerre = chargerIcone("Images/terre"+((CaseCultivable) simulateurPotager.getPlateau()[x][y]).getEtatTerre() +".png");
@@ -237,7 +237,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         }
     }
 
-    public void mettreAJourInterface(){
+    public void mettreAJourMeteo(){
         switch(simulateurMeteo.getCalcMomentJournee()){
             case MATIN -> {
                 momentJournee.setIcon(new ImageIcon("Images/matin.png"));
@@ -259,21 +259,43 @@ public class VueControleurPotager extends JFrame implements Observer {
             }
             case PLUIE -> {
                 meteo.setIcon(new ImageIcon("Images/pluie.png"));
+                for(int i = 0; i < sizeX; i++){
+                    for(int j = 0; j < sizeY; j++) {
+                        if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
+                            ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(5,"ajout");
+                        }
+                    }
+                }
             }
             case ECLAIRCIES -> {
                 meteo.setIcon(new ImageIcon("Images/soleilNuage.png"));
+                for(int i = 0; i < sizeX; i++){
+                    for(int j = 0; j < sizeY; j++) {
+                        if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
+                            ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(2,"baisse");
+                        }
+                    }
+                }
             }
             case NUAGE -> {
                 meteo.setIcon(new ImageIcon("Images/nuage.png"));
+                for(int i = 0; i < sizeX; i++){
+                    for(int j = 0; j < sizeY; j++) {
+                        if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
+                            ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(1,"ajout");
+                        }
+                    }
+                }
             }
         }
+        temperature.setText(simulateurMeteo.getCalcTemperature()+"°C");
     }
 
     @Override
     public void update(Observable o, Object arg) {
         try {
             mettreAJourAffichage();
-            mettreAJourInterface();
+            mettreAJourMeteo();
             afficherDate();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -412,7 +434,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         temperature.setIcon(new ImageIcon("Images/boutonFond.png"));
         temperature.setHorizontalTextPosition(SwingConstants.CENTER);
         temperature.setForeground(Color.orange);
-        temperature.setFont(new Font("Arial", Font.BOLD, 20));
+        temperature.setFont(new Font("Arial", Font.BOLD, 13));
         general.add(temperature, gbcGeneral);
 
 

@@ -103,8 +103,8 @@ public class VueControleurPotager extends JFrame implements Observer {
 */
 
     private void chargerLesIcones() {
-    	// image libre de droits utilisée pour les légumes : https://www.vecteezy.com/vector-art/2559196-bundle-of-fruits-and-vegetables-icons	
-    
+        // image libre de droits utilisée pour les légumes : https://www.vecteezy.com/vector-art/2559196-bundle-of-fruits-and-vegetables-icons
+
 
         icoSalade = chargerIcone("Images/data.png", 0, 0, 120, 120);
         mapLegumeIcone.put(icoSalade,"Salade");

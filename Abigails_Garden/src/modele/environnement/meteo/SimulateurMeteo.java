@@ -9,6 +9,7 @@ import java.util.Random;
 
 public class SimulateurMeteo implements Runnable {
     private SimulateurPotager simPot;
+    private SimulateurDate simDate;
 
     private EnumMomentJournee momentJourneeActuel = EnumMomentJournee.JOURNEE;
     private EnumMeteo etatMeteoActuel = EnumMeteo.SOLEIL;
@@ -17,6 +18,7 @@ public class SimulateurMeteo implements Runnable {
     public SimulateurMeteo(SimulateurPotager _simPot) {
         Ordonnanceur.getOrdonnanceur().add(this);
         simPot = _simPot;
+        simDate = new SimulateurDate();
         setMeteoInitiale();
     }
 
@@ -25,7 +27,6 @@ public class SimulateurMeteo implements Runnable {
     }
 
     public EnumMomentJournee getCalcMomentJournee(){
-        SimulateurDate simDate = new SimulateurDate();
         if(simDate.getHeure() >= 6 && simDate.getHeure() < 9){
             momentJourneeActuel = EnumMomentJournee.MATIN;
         }
@@ -47,10 +48,10 @@ public class SimulateurMeteo implements Runnable {
 
     public EnumMeteo getCalcEtatMeteo() {
         EnumMeteo etatMeteo;
-        SimulateurDate simDate = new SimulateurDate();
 
         // On change l'état de la météo toutes les heures
-        if(simDate.getMinute() == 0){
+        if(simDate.getHeureModifiee()){
+            simDate.setHeureModifiee(false);
             Random rand = new Random();
             if(getMomentJournee() == EnumMomentJournee.NUIT){
                 int n = rand.nextInt(2);
@@ -74,8 +75,8 @@ public class SimulateurMeteo implements Runnable {
             // Modification de l'humidité des cases cultivables
             switch (etatMeteo) {
                 case SOLEIL -> {
-                    for (int i = 0; i < simPot.SIZE_X; i++) {
-                        for (int j = 0; j < simPot.SIZE_Y; j++) {
+                    for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
+                        for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
                             if (simPot.getPlateau()[i][j] instanceof CaseCultivable) {
                                 ((CaseCultivable) simPot.getPlateau()[i][j]).setHumiditeAvVal(5, "baisse");
                             }
@@ -83,8 +84,8 @@ public class SimulateurMeteo implements Runnable {
                     }
                 }
                 case ECLAIRCIES -> {
-                    for (int i = 0; i < simPot.SIZE_X; i++) {
-                        for (int j = 0; j < simPot.SIZE_Y; j++) {
+                    for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
+                        for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
                             if (simPot.getPlateau()[i][j] instanceof CaseCultivable) {
                                 ((CaseCultivable) simPot.getPlateau()[i][j]).setHumiditeAvVal(2, "baisse");
                             }
@@ -92,8 +93,8 @@ public class SimulateurMeteo implements Runnable {
                     }
                 }
                 case PLUIE -> {
-                    for (int i = 0; i < simPot.SIZE_X; i++) {
-                        for (int j = 0; j < simPot.SIZE_Y; j++) {
+                    for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
+                        for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
                             if (simPot.getPlateau()[i][j] instanceof CaseCultivable) {
                                 ((CaseCultivable) simPot.getPlateau()[i][j]).setHumiditeAvVal(5, "ajout");
                             }
@@ -101,8 +102,8 @@ public class SimulateurMeteo implements Runnable {
                     }
                 }
                 case NUAGE -> {
-                    for (int i = 0; i < simPot.SIZE_X; i++) {
-                        for (int j = 0; j < simPot.SIZE_Y; j++) {
+                    for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
+                        for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
                             if (simPot.getPlateau()[i][j] instanceof CaseCultivable) {
                                 ((CaseCultivable) simPot.getPlateau()[i][j]).setHumiditeAvVal(1, "ajout");
                             }
@@ -123,11 +124,11 @@ public class SimulateurMeteo implements Runnable {
     public int getCalcTemperature(){
         EnumMeteo etatMeteo = getEtatMeteo();
         EnumMomentJournee momentJournee = getMomentJournee();
-        SimulateurDate simDate = new SimulateurDate();
         Random rand = new Random();
 
         // On change la température toutes les heures
-        if(simDate.getMinute() == 0){
+        if(simDate.getHeureModifiee()){
+            simDate.setHeureModifiee(false);
             switch (momentJournee) {
                 case MATIN -> {
                     int n = rand.nextInt(2); // 50% de chance de changer la température

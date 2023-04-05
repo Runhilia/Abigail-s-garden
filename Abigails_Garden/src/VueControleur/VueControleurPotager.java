@@ -30,6 +30,7 @@ import modele.environnement.varietes.*;
 public class VueControleurPotager extends JFrame implements Observer {
     private SimulateurPotager simulateurPotager; // référence sur une classe de modèle : permet d'accéder aux données du modèle pour le rafraichissement, permet de communiquer les actions clavier (ou souris)
     private SimulateurMeteo simulateurMeteo;
+    private SimulateurDate simulateurDate;
 
     // taille de la grille affichée
     private int sizeX;
@@ -56,11 +57,11 @@ public class VueControleurPotager extends JFrame implements Observer {
     private Button pauseTemps;
     private Button accTemps;
 
-    private JLabel momentJournee = new JLabel();
-    private JLabel meteo = new JLabel();
-    private JLabel affichageDate = new JLabel();
-    private JLabel humide = new JLabel();
-    private JLabel temperature = new JLabel();
+    private final JLabel momentJournee = new JLabel();
+    private final JLabel meteo = new JLabel();
+    private final JLabel affichageDate = new JLabel();
+    private final JLabel humide = new JLabel();
+    private final JLabel temperature = new JLabel();
 
 
     public VueControleurPotager(SimulateurPotager _simulateurPotager) {
@@ -68,6 +69,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         sizeY = _simulateurPotager.SIZE_Y;
         simulateurPotager = _simulateurPotager;
         simulateurMeteo = new SimulateurMeteo(simulateurPotager);
+        simulateurDate = new SimulateurDate();
 
         chargerLesIcones();
         placerLesComposantsGraphiques();
@@ -200,8 +202,7 @@ public class VueControleurPotager extends JFrame implements Observer {
     }
 
     public void afficherDate(){
-        SimulateurDate date = new SimulateurDate();
-        affichageDate.setText(date.getDateString()); // On affiche la date
+        affichageDate.setText(simulateurDate.getDateString()); // On affiche la date
     }
 
     /**
@@ -254,39 +255,10 @@ public class VueControleurPotager extends JFrame implements Observer {
         }
 
         switch (simulateurMeteo.getCalcEtatMeteo()) {
-            case SOLEIL -> {
-                meteo.setIcon(new ImageIcon("Images/soleil.png"));
-            }
-            case PLUIE -> {
-                meteo.setIcon(new ImageIcon("Images/pluie.png"));
-                for(int i = 0; i < sizeX; i++){
-                    for(int j = 0; j < sizeY; j++) {
-                        if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
-                            ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(5,"ajout");
-                        }
-                    }
-                }
-            }
-            case ECLAIRCIES -> {
-                meteo.setIcon(new ImageIcon("Images/soleilNuage.png"));
-                for(int i = 0; i < sizeX; i++){
-                    for(int j = 0; j < sizeY; j++) {
-                        if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
-                            ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(2,"baisse");
-                        }
-                    }
-                }
-            }
-            case NUAGE -> {
-                meteo.setIcon(new ImageIcon("Images/nuage.png"));
-                for(int i = 0; i < sizeX; i++){
-                    for(int j = 0; j < sizeY; j++) {
-                        if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
-                            ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(1,"ajout");
-                        }
-                    }
-                }
-            }
+            case SOLEIL -> meteo.setIcon(new ImageIcon("Images/soleil.png"));
+            case PLUIE -> meteo.setIcon(new ImageIcon("Images/pluie.png"));
+            case ECLAIRCIES -> meteo.setIcon(new ImageIcon("Images/soleilNuage.png"));
+            case NUAGE -> meteo.setIcon(new ImageIcon("Images/nuage.png"));
         }
         temperature.setText(simulateurMeteo.getCalcTemperature()+"°C");
     }
@@ -371,8 +343,8 @@ public class VueControleurPotager extends JFrame implements Observer {
 
 
         JComboBox<ImageIcon> graines = new JComboBox<ImageIcon>();
-        graines.addItem(chargerIcone("Images/data.png", 390, 393, 120, 120));
-        graines.addItem(chargerIcone("Images/data.png", 0, 0, 120, 120));
+        graines.addItem(icoCarotte);
+        graines.addItem(icoSalade);
 
         // Ajout d'un listener qui permet de récupérer le légume sélectionné
         graines.addActionListener(e -> {
@@ -402,6 +374,12 @@ public class VueControleurPotager extends JFrame implements Observer {
         gbcTemps.gridx=2;
         accTemps = this.ajoutBouton("Images/acc");
         utilitaireTemps.add(accTemps, gbcTemps);
+        accTemps.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                simulateurDate.modifierVitesse(accTemps.isActif());
+            }
+        });
 
         utilitaire.add(utilitaireTemps);
 
@@ -487,7 +465,10 @@ public class VueControleurPotager extends JFrame implements Observer {
         infoPlante.setIcon(new ImageIcon("Images/infoBase.png"));
         infoPlante.setActif(false);
         ralTemps.setIcon(new ImageIcon("Images/ralBase.png"));
+        ralTemps.setActif(false);
         pauseTemps.setIcon(new ImageIcon("Images/pauseBase.png"));
+        pauseTemps.setActif(false);
         accTemps.setIcon(new ImageIcon("Images/accBase.png"));
+        accTemps.setActif(false);
     }
 }

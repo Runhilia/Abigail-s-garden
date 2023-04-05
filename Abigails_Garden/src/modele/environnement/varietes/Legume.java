@@ -7,6 +7,7 @@ public abstract class Legume {
     protected EtatLegume etatLegume;
     protected double tempsPousse; // Temps de pousse d'un légume en heures réelles
     protected SimulateurDate heurePlantation; // Heure de plantation du légume
+    protected SimulateurDate simDate;
 
     /**
      * Constructeur de la classe Legume
@@ -14,6 +15,7 @@ public abstract class Legume {
     public Legume() {
         etatLegume = EtatLegume.graine;
         heurePlantation = new SimulateurDate();
+        simDate = new SimulateurDate();
     }
 
     public abstract Varietes getVariete();

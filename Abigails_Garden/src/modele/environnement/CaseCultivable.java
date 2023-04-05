@@ -62,9 +62,9 @@ public class CaseCultivable extends Case {
         this.setEtatTerre();
     }
     public void setHumiditeAvVal(int val, String operation) {
-        if(operation == "ajout" && humidite < 100)
+        if(operation.equals("ajout") && humidite < 100)
             humidite += val;
-	    else if (operation == "baisse" && humidite >0)
+	    else if (operation.equals("baisse") && humidite >0)
             humidite -= val;
         this.setEtatTerre();
     }

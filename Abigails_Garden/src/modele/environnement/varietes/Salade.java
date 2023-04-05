@@ -2,13 +2,11 @@ package modele.environnement.varietes;
 
 import modele.SimulateurDate;
 
-import java.util.Date;
-
 public class Salade extends Legume {
 
     public Salade() {
         super();
-        tempsPousse = 5;
+        tempsPousse = 1;
         System.out.println("Salade plantée " + heurePlantation.getDateString());
     }
     @Override
@@ -18,10 +16,10 @@ public class Salade extends Legume {
 
     @Override
     protected void croissance() {
-        int heureActuelle = new SimulateurDate().convertTempsVersMinute();
-        double heureFinPousse = heurePlantation.convertTempsVersMinute() + tempsPousse * 60;
+        int heureActuelle = simDate.getTempsMinutes();
+        double heureFinPousse = (heurePlantation.getTempsMinutes() + tempsPousse * 60) % 1440;
 
-        if(heureActuelle == heurePlantation.convertTempsVersMinute() + (tempsPousse * 60) / 5)
+        if(heureActuelle == heurePlantation.getTempsMinutes() + (tempsPousse * 60) / 5)
         {
             etatLegume = EtatLegume.pousse;
         }

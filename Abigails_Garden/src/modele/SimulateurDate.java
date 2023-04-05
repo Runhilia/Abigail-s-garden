@@ -1,18 +1,15 @@
 package modele;
 
-import java.text.DateFormatSymbols;
 import java.time.LocalDateTime;
-import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SimulateurDate {
 
     private int heure,minute;
-
-    private String jour;
-
-    // Jour de la semaine
-    DateFormatSymbols dfs = new DateFormatSymbols(Locale.FRENCH);
-    String[] joursSemaine = dfs.getWeekdays();
+    private int saut = 1;
+    private boolean heureModifiee = false;
 
     /**
      * Constructeur de la classe Date
@@ -21,9 +18,36 @@ public class SimulateurDate {
     public SimulateurDate()
     {
         LocalDateTime heureJourActuels = LocalDateTime.now(); // Récupère l'heure actuelle et le jour actuel
-        this.minute = heureJourActuels.getSecond(); // Une minute ici correspond à une second en vrai
+        this.minute = heureJourActuels.getSecond(); // Une minute ici correspond à une seconde en vrai
         this.heure = heureJourActuels.getMinute()%24; // Une heure ici correspond à une minute en vrai
-        this.jour = joursSemaine[(heureJourActuels.getDayOfWeek().getValue()+1)%7]; // Récupère le jour de la semaine
+
+        Runnable affichageDate = this::changerHeure;
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(affichageDate,0,1, TimeUnit.SECONDS); // On répète la méthode toutes les secondes
+    }
+
+    public void changerHeure(){
+        if(minute+saut < 60){
+            minute += saut;
+        }
+        else{
+            heureModifiee = true;
+            minute = minute + saut - 60;
+            if(heure != 23) {
+                heure++;
+            } else {
+                heure = 0;
+            }
+
+        }
+    }
+
+    public void modifierVitesse(boolean accelere){
+        if(accelere){
+            saut = 5;
+        } else{
+            saut = 1;
+        }
     }
 
     /**
@@ -33,16 +57,16 @@ public class SimulateurDate {
         String date;
         if (minute < 10 && heure < 10)
         {
-            date = jour + " 0" + heure + ":0" + minute;
+            date = " 0" + heure + ":0" + minute;
         }
         else if (minute < 10) {
-            date = jour + " " + heure + ":0" + minute;
+            date = " " + heure + ":0" + minute;
         }
         else if (heure < 10) {
-            date = jour + " 0" + heure + ":" + minute;
+            date = " 0" + heure + ":" + minute;
         }
         else {
-            date = jour + " " + heure + ":" + minute;
+            date = " " + heure + ":" + minute;
         }
         return date;
     }
@@ -54,18 +78,19 @@ public class SimulateurDate {
         return heure;
     }
 
-    /**
-     * @return La minute actuelle
-     */
-    public int getMinute() {
-        return minute;
+    public boolean getHeureModifiee(){
+        return heureModifiee;
+    }
+
+    public void setHeureModifiee(boolean b){
+        heureModifiee = b;
     }
 
     /**
      * Convertit la date en minute
      * @return int
      */
-    public int convertTempsVersMinute(){
+    public int getTempsMinutes(){
         return heure*60+minute;
     }
 }

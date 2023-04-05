@@ -55,7 +55,6 @@ public class VueControleurPotager extends JFrame implements Observer {
     private Button arrosoir;
     private Button outil;
     private Button infoPlante;
-    private Button ralTemps;
     private Button pauseTemps;
     private Button accTemps;
     private JLabel momentJournee = new JLabel();
@@ -229,7 +228,6 @@ public class VueControleurPotager extends JFrame implements Observer {
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
                 if (simulateurPotager.getPlateau()[x][y] instanceof CaseCultivable) { // si la case est cultivable
-
                     Legume legume = ((CaseCultivable) simulateurPotager.getPlateau()[x][y]).getLegume();
                     icoTerre = chargerIcone("Images/terre"+((CaseCultivable) simulateurPotager.getPlateau()[x][y]).getEtatTerre() +".png");
                     if (legume != null) {
@@ -402,16 +400,13 @@ public class VueControleurPotager extends JFrame implements Observer {
         GridBagConstraints gbcTemps = new GridBagConstraints();
 
         gbcTemps.insets = new Insets(5, 0, 5, 0);
-        gbcTemps.gridx=0;
-        ralTemps = this.ajoutBouton("Images/ral");
-        utilitaireTemps.add(ralTemps, gbcTemps);
 
-        gbcTemps.gridx=1;
-        pauseTemps = this.ajoutBouton("Images/pause");
+        gbcTemps.gridx=0;
+        pauseTemps = this.ajoutBouton("Images/tpsNorm");
         utilitaireTemps.add(pauseTemps, gbcTemps);
 
-        gbcTemps.gridx=2;
-        accTemps = this.ajoutBouton("Images/acc");
+        gbcTemps.gridx=1;
+        accTemps = this.ajoutBouton("Images/accelerer");
         utilitaireTemps.add(accTemps, gbcTemps);
         accTemps.addMouseListener(new MouseAdapter() {
             @Override
@@ -542,11 +537,9 @@ public class VueControleurPotager extends JFrame implements Observer {
         outil.setActif(false);
         infoPlante.setIcon(new ImageIcon("Images/infoBase.png"));
         infoPlante.setActif(false);
-        ralTemps.setIcon(new ImageIcon("Images/ralBase.png"));
-        ralTemps.setActif(false);
-        pauseTemps.setIcon(new ImageIcon("Images/pauseBase.png"));
+        pauseTemps.setIcon(new ImageIcon("Images/tpsNormBase.png"));
         pauseTemps.setActif(false);
-        accTemps.setIcon(new ImageIcon("Images/accBase.png"));
+        accTemps.setIcon(new ImageIcon("Images/accelererBase.png"));
         accTemps.setActif(false);
     }
 }

@@ -11,11 +11,12 @@ public class CaseCultivable extends Case {
         super(_simulateurPotager);
     }
     int humidite = 50;
-    EtatTerre etatTerre = EtatTerre.NORMAL;
+    private EtatTerre etatTerre = EtatTerre.NORMAL;
+    private Inventaire inventaire;
 
     @Override
     public void actionUtilisateur(Action typeAction) {
-        Inventaire inventaire = Inventaire.getInventaire();
+         inventaire = Inventaire.getInventaire();
         switch(typeAction){
             case RECOLTER :
                 if(legume != null && legume.getEtatLegume().equals(EtatLegume.legume)) {

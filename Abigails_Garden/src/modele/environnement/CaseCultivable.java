@@ -1,6 +1,6 @@
 package modele.environnement;
 
-import modele.Inventaire;
+import modele.Inventaire.Inventaire;
 import modele.SimulateurPotager;
 import modele.environnement.varietes.*;
 

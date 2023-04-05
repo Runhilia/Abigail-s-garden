@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import modele.Inventaire.Inventaire;
 import modele.SimulateurDate;
 import modele.SimulateurPotager;
 import modele.environnement.*;
@@ -50,18 +51,25 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     // Composants graphiques
     private JLabel[][] tabJLabel; // cases graphiques (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
+    private JLabel[][] labelInventaire;
     private Button arrosoir;
     private Button outil;
     private Button infoPlante;
     private Button ralTemps;
     private Button pauseTemps;
     private Button accTemps;
+    private JLabel momentJournee = new JLabel();
+    private JLabel meteo = new JLabel();
+    private JLabel affichageDate = new JLabel();
+    private JLabel humide = new JLabel();
+    private JLabel temperature = new JLabel();
+    private JPanel infoCase= new JPanel();
+    private JTextField warning = new JTextField();
 
-    private final JLabel momentJournee = new JLabel();
-    private final JLabel meteo = new JLabel();
-    private final JLabel affichageDate = new JLabel();
-    private final JLabel humide = new JLabel();
-    private final JLabel temperature = new JLabel();
+    private JPanel plante = new JPanel();
+
+    private Inventaire inventaire;
+
 
 
     public VueControleurPotager(SimulateurPotager _simulateurPotager) {
@@ -70,6 +78,9 @@ public class VueControleurPotager extends JFrame implements Observer {
         simulateurPotager = _simulateurPotager;
         simulateurMeteo = new SimulateurMeteo(simulateurPotager);
         simulateurDate = new SimulateurDate();
+
+        inventaire = Inventaire.getInventaire();
+
 
         chargerLesIcones();
         placerLesComposantsGraphiques();
@@ -108,23 +119,17 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     private void placerLesComposantsGraphiques() {
         setTitle("A vegetable garden");
-        setSize(500, 585);
+        setSize(680, 585);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
         setResizable(false);
 
         JPanel utilitaire = this.createNorthPanel();
         JPanel infos = this.createSouthPanel();
+        JPanel stock = this.createEastPanel();
 
         add(infos, BorderLayout.SOUTH);
         add(utilitaire, BorderLayout.NORTH);
-
-        JDialog jd = new JDialog();
-        jd.setTitle("Informations sur la case");
-        jd.setSize(100, 100);
-        jd.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        jd.setResizable(false);
-
-
+        add(stock, BorderLayout.EAST);
 
         JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases graphiques et les positionner sous la forme d'une grille
 
@@ -157,40 +162,36 @@ public class VueControleurPotager extends JFrame implements Observer {
                         }else if(arrosoir.isActif()){
                             simulateurPotager.actionUtilisateur(xx, yy, Action.ARROSER);
                         }else if(infoPlante.isActif()){
-                            humide.setText(((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getHumidite()+"%");
-                            humide.setIcon(new ImageIcon("Images/boutonFond.png"));
-                            humide.setHorizontalTextPosition(SwingConstants.CENTER);
-                            humide.setForeground(Color.orange);
+
+                            humide.setText("Humidité : " + ((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getHumidite()+"%");
                             humide.setFont(new Font("Arial", Font.BOLD, 15));
 
-                            JPanel panel = new JPanel();
-                            JTextField variete = new JTextField("Variété : ");
-                            variete.setBorder(null);
-                            variete.setEditable(false);
+                            JLabel variete = new JLabel("Variété : ");
+                            variete.setFont(new Font("Arial", Font.BOLD, 15));
 
-                            JLabel varieteLabel = new JLabel();
+                            JLabel varieteIcon = new JLabel();
+
                             Legume legumeCase = ((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getLegume();
-                            if(legumeCase != null){
-                                switch(legumeCase.getVariete()){
+                            if(legumeCase != null) {
+                                switch (legumeCase.getVariete()) {
                                     case salade:
-                                        varieteLabel.setIcon(icoSalade);
+                                        varieteIcon.setIcon(icoSalade);
                                         break;
                                     case carotte:
-                                        varieteLabel.setIcon(icoCarotte);
+                                        varieteIcon.setIcon(icoCarotte);
                                         break;
                                     default:
                                         break;
                                 }
                             }
+                            infoCase.remove(plante);
+                            plante.removeAll();
+                            infoCase.repaint();
 
-                            panel.add(variete);
-                            panel.add(varieteLabel);
-
-                            jd.add(humide, BorderLayout.CENTER);
-                            jd.add(panel, BorderLayout.SOUTH);
-                            jd.setVisible(true);
-
-
+                            infoCase.add(humide);
+                            plante.add(variete);
+                            plante.add(varieteIcon);
+                            infoCase.add(plante);
                         }
                         else
                             simulateurPotager.actionUtilisateur(xx, yy, Action.PLANTER);
@@ -210,6 +211,21 @@ public class VueControleurPotager extends JFrame implements Observer {
      */
     private void mettreAJourAffichage() throws IOException {
         ImageIcon iconPlante= null;
+
+        if(!infoPlante.isActif()){
+            warning.setText("Cliquez sur i + une case");
+            infoCase.add(warning);
+            infoCase.remove(humide);
+            infoCase.remove(plante);
+            plante.removeAll();
+            infoCase.repaint();
+
+        }else{
+            infoCase.remove(warning);
+            infoCase.validate();
+            infoCase.repaint();
+        }
+
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
                 if (simulateurPotager.getPlateau()[x][y] instanceof CaseCultivable) { // si la case est cultivable
@@ -235,6 +251,29 @@ public class VueControleurPotager extends JFrame implements Observer {
                 } else
                     tabJLabel[x][y].getGraphics().drawImage(icoVide.getImage(), 0, 0, null);
             }
+        }
+
+        int i=0;
+        int j=0;
+        for(Varietes v : Varietes.values()){
+            if(i== 3)
+                break;
+            if(j == 3){
+                i++;
+                j=0;
+            }
+            switch (v){
+                case carotte:
+                    labelInventaire[i][j].setIcon(icoCarotte);
+                    break;
+                case salade:
+                    labelInventaire[i][j].setIcon(icoSalade);
+                    break;
+                default:
+                    break;
+            }
+            labelInventaire[i][j].setText(""+inventaire.getContenu().get(v));
+            j++;
         }
     }
 
@@ -387,9 +426,7 @@ public class VueControleurPotager extends JFrame implements Observer {
     }
 
     public JPanel createSouthPanel(){
-        JPanel infos = new JPanel();
         JPanel general = new JPanel();
-        JPanel inventaire = new JPanel();
 
         // Panel général
         GridBagConstraints gbcGeneral = new GridBagConstraints();
@@ -415,17 +452,58 @@ public class VueControleurPotager extends JFrame implements Observer {
         temperature.setFont(new Font("Arial", Font.BOLD, 13));
         general.add(temperature, gbcGeneral);
 
-
-        infos.add(general);
-
-        /** Panel Inventaire **/
-//        Button inven = this.ajoutBouton("Images/Pacman.png");
-//        inventaire.add(inven);
-        infos.add(inventaire);
-
-        return infos;
+        return general;
     }
 
+
+    public JPanel createEastPanel(){
+        JPanel global = new JPanel();
+        global.setLayout(new GridLayout(3,1));
+
+        /** Information de case **/
+        GridLayout grid = new GridLayout(3,1);
+        infoCase.setLayout(grid);
+        infoCase.setPreferredSize(new Dimension(180,50));
+        JLabel infoIcon = new JLabel(new ImageIcon("Images/infoClick.png"));
+        infoCase.add(infoIcon);
+        plante.setLayout(new GridLayout(1,2));
+
+        warning.setEditable(false);
+        warning.setBorder(null);
+        infoCase.add(warning);
+        infoCase.add(humide);
+        infoCase.add(plante);
+
+
+        global.add(infoCase);
+
+        JPanel inventairePanel = new JPanel();
+        inventairePanel.setLayout(new GridLayout(2,1));
+        /** Inventaire **/
+        JLabel invIcon = new JLabel(new ImageIcon("Images/inventaire.png"));
+        inventairePanel.add(invIcon);
+
+        labelInventaire = new JLabel[3][3];
+        JComponent grilleJLabels = new JPanel(new GridLayout(3, 3));
+        for(int i= 0; i<3; i++){
+            for(int j=0; j<3; j++){
+                JLabel l = new JLabel();
+
+                labelInventaire[i][j] = l; // on conserve les cases graphiques dans tabJLabel pour avoir un accès pratique à celles-ci (voir mettreAJourAffichage() )
+
+                labelInventaire[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
+                grilleJLabels.add(l);
+            }
+        }
+        inventairePanel.add(grilleJLabels);
+
+
+
+
+        global.add(inventairePanel);
+
+        return global;
+    }
     /**
      * Ajout d'un boutton avec une icone
      * @param urlIcone

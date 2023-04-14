@@ -1,6 +1,7 @@
 
 import VueControleur.VueControleurPotager;
 import modele.Ordonnanceur;
+import modele.SimulateurDate;
 import modele.SimulateurPotager;
 
 /*
@@ -12,11 +13,11 @@ import modele.SimulateurPotager;
 
 public class Main {
     public static void main(String[] args) {
-        SimulateurPotager simulateurPotager = new SimulateurPotager();
-        VueControleurPotager vc = new VueControleurPotager(simulateurPotager);
+        SimulateurDate simulateurDate = new SimulateurDate();
+        SimulateurPotager simulateurPotager = new SimulateurPotager(simulateurDate);
+        VueControleurPotager vc = new VueControleurPotager(simulateurPotager,simulateurDate);
         vc.setVisible(true);
         Ordonnanceur.getOrdonnanceur().addObserver(vc);
         Ordonnanceur.getOrdonnanceur().start(300);
-
     }
 }

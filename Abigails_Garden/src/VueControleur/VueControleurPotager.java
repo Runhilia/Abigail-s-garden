@@ -71,15 +71,14 @@ public class VueControleurPotager extends JFrame implements Observer {
 
 
 
-    public VueControleurPotager(SimulateurPotager _simulateurPotager) {
+    public VueControleurPotager(SimulateurPotager _simulateurPotager, SimulateurDate _simulateurDate) {
         sizeX = _simulateurPotager.SIZE_X;
         sizeY = _simulateurPotager.SIZE_Y;
         simulateurPotager = _simulateurPotager;
-        simulateurMeteo = new SimulateurMeteo(simulateurPotager);
-        simulateurDate = new SimulateurDate();
+        simulateurDate = _simulateurDate;
+        simulateurMeteo = new SimulateurMeteo(simulateurPotager,simulateurDate);
 
         inventaire = Inventaire.getInventaire();
-
 
         chargerLesIcones();
         placerLesComposantsGraphiques();

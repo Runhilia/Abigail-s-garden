@@ -5,17 +5,20 @@
  */
 package modele.environnement;
 
+import modele.SimulateurDate;
 import modele.SimulateurPotager;
 
 public abstract class Case implements Runnable {
     protected SimulateurPotager simulateurPotager;
+    protected SimulateurDate simulateurDate;
 
     private int précipitations; // TODO : mis à jour par le simulateur de météo pour chaque case ()
     private int ensolleillement;
 
     
-    public Case(SimulateurPotager _simulateurPotager) {
+    public Case(SimulateurPotager _simulateurPotager, SimulateurDate _simulateurDate) {
         simulateurPotager = _simulateurPotager;
+        simulateurDate = _simulateurDate;
     }
 
     public abstract void actionUtilisateur(Action typeAction);

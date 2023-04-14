@@ -8,7 +8,6 @@ package modele;
 
 import modele.environnement.Action;
 import modele.environnement.*;
-import modele.environnement.meteo.SimulateurMeteo;
 
 import java.awt.Point;
 
@@ -18,14 +17,13 @@ public class SimulateurPotager {
     public static final int SIZE_X = 10;
     public static final int SIZE_Y = 10;
     private String legumeSelectionne = "Carotte";
-    private SimulateurMeteo simMet;
     private Case[][] grilleCases = new Case[SIZE_X][SIZE_Y]; // permet de récupérer une entité à partir de ses coordonnées
+    private final SimulateurDate simDate;
 
-    public SimulateurPotager() {
+    public SimulateurPotager(SimulateurDate _simDate) {
+        simDate = _simDate;
 
         initialisationDesEntites();
-
-        simMet = new SimulateurMeteo(this);
     }
 
     public void setLegumeSelectionne(String legumeSelectionne) {
@@ -39,12 +37,12 @@ public class SimulateurPotager {
     public Case[][] getPlateau() {
         return grilleCases;
     }
-    
+
     private void initialisationDesEntites() {
 
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
-                CaseCultivable cc = new CaseCultivable(this);
+                CaseCultivable cc = new CaseCultivable(this,simDate);
                 addEntite(cc , x, y);
 
                 Ordonnanceur.getOrdonnanceur().add(cc);

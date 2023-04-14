@@ -9,7 +9,6 @@ public class SimulateurDate {
 
     private int heure,minute;
     private int saut = 1;
-    private boolean heureModifiee = false;
 
     /**
      * Constructeur de la classe Date
@@ -31,7 +30,6 @@ public class SimulateurDate {
             minute += saut;
         }
         else{
-            heureModifiee = true;
             minute = minute + saut - 60;
             if(heure != 23) {
                 heure++;
@@ -78,12 +76,11 @@ public class SimulateurDate {
         return heure;
     }
 
-    public boolean getHeureModifiee(){
-        return heureModifiee;
-    }
-
-    public void setHeureModifiee(boolean b){
-        heureModifiee = b;
+    /**
+     * @return La minute actuelle
+     */
+    public int getMinute() {
+        return minute;
     }
 
     /**
@@ -92,5 +89,12 @@ public class SimulateurDate {
      */
     public int getTempsMinutes(){
         return heure*60+minute;
+    }
+
+    /**
+     * @return le saut de temps
+     */
+    public int getSaut() {
+        return saut;
     }
 }

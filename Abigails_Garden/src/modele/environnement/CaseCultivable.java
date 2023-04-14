@@ -1,18 +1,20 @@
 package modele.environnement;
 
 import modele.Inventaire.Inventaire;
+import modele.SimulateurDate;
 import modele.SimulateurPotager;
 import modele.environnement.varietes.*;
 
 public class CaseCultivable extends Case {
 
     private Legume legume;
-    public CaseCultivable(SimulateurPotager _simulateurPotager) {
-        super(_simulateurPotager);
-    }
     int humidite = 50;
     private EtatTerre etatTerre = EtatTerre.NORMAL;
     private Inventaire inventaire;
+
+    public CaseCultivable(SimulateurPotager _simulateurPotager,SimulateurDate _simulateurDate) {
+        super(_simulateurPotager,_simulateurDate);
+    }
 
     @Override
     public void actionUtilisateur(Action typeAction) {
@@ -33,8 +35,8 @@ public class CaseCultivable extends Case {
                         if (legume == null)
                         {
                             switch (simulateurPotager.getLegumeSelectionne()) {
-                                case "Carotte" -> legume = new Carotte();
-                                case "Salade" -> legume = new Salade();
+                                case "Carotte" -> legume = new Carotte(simulateurDate);
+                                case "Salade" -> legume = new Salade(simulateurDate);
                             }
                         }
                         break;

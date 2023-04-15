@@ -26,7 +26,6 @@ public class CaseCultivable extends Case {
                         case carotte -> inventaire.addCarotte(1);
                         case salade -> inventaire.addSalade(1);
                     }
-                    System.out.println(inventaire.toString());
                     legume = null;
 
                 }
@@ -41,7 +40,7 @@ public class CaseCultivable extends Case {
                         }
                         break;
                     case ARROSER:
-                        this.setHumiditeAvTaux(80);
+                        this.setHumiditeAvVal(15, "ajout");
                         break;
                     default:
                         break;
@@ -65,10 +64,14 @@ public class CaseCultivable extends Case {
         this.setEtatTerre();
     }
     public void setHumiditeAvVal(int val, String operation) {
-        if(operation.equals("ajout") && humidite < 100)
+        if(operation.equals("ajout"))
             humidite += val;
-	    else if (operation.equals("baisse") && humidite >0)
+	    else if (operation.equals("baisse") )
             humidite -= val;
+        if(humidite > 100)
+            humidite =100;
+        else if(humidite < 0)
+            humidite =0;
         this.setEtatTerre();
     }
 
@@ -90,7 +93,8 @@ public class CaseCultivable extends Case {
     @Override
     public void run() {
         if (legume != null) {
-            legume.nextStep();
+            legume.nextStep(this);
+
         }
     }
 }

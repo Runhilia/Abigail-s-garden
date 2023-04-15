@@ -5,13 +5,15 @@ import modele.environnement.varietes.Varietes;
 import java.util.HashMap;
 
 public class Inventaire {
-    HashMap<Varietes, Integer> contenu = new HashMap<>();
+    private HashMap<Varietes, Integer> contenu = new HashMap<>();
     private static Inventaire instance = null;
+    private int argent;
 
     private Inventaire(){
         for(Varietes v: Varietes.values()){
             contenu.put(v, 0);
         }
+        argent =0;
     }
 
     public void addSalade(int nb){
@@ -22,6 +24,16 @@ public class Inventaire {
     public void addCarotte(int nb){
         int nbCarotte = contenu.get(Varietes.carotte);
         contenu.replace(Varietes.carotte, nbCarotte, nbCarotte+nb);
+    }
+
+    public void removeSalade(int nb){
+        int nbSalade = contenu.get(Varietes.salade);
+        contenu.replace(Varietes.salade, nbSalade, nbSalade-nb);
+    }
+
+    public void removeCarotte(int nb){
+        int nbCarotte = contenu.get(Varietes.carotte);
+        contenu.replace(Varietes.carotte, nbCarotte, nbCarotte-nb);
     }
 
     public static Inventaire getInventaire(){
@@ -35,7 +47,13 @@ public class Inventaire {
     }
 
 
-    public String toString(){
-        return "Il y a " + contenu.get(Varietes.carotte) + " dans l'inventaire";
+    public int getArgent() {
+        return argent;
     }
+
+    public void setArgent(int argent) {
+        this.argent += argent;
+    }
+
+
 }

@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import modele.Inventaire.Inventaire;
+import modele.Inventaire.Magasin;
 import modele.SimulateurDate;
 import modele.SimulateurPotager;
 import modele.environnement.*;
@@ -52,6 +53,7 @@ public class VueControleurPotager extends JFrame implements Observer {
     // Composants graphiques
     private JLabel[][] tabJLabel; // cases graphiques (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
     private JLabel[][] labelInventaire;
+    private JLabel[][] labelMagasin;
     private Button arrosoir;
     private Button outil;
     private Button infoPlante;
@@ -68,6 +70,10 @@ public class VueControleurPotager extends JFrame implements Observer {
     private JPanel plante = new JPanel();
 
     private Inventaire inventaire;
+    private Magasin magasin;
+    private JSpinner nbLegume;
+    private Varietes legumeVente;
+    private JLabel argent;
 
 
 
@@ -76,29 +82,14 @@ public class VueControleurPotager extends JFrame implements Observer {
         sizeY = _simulateurPotager.SIZE_Y;
         simulateurPotager = _simulateurPotager;
         simulateurDate = _simulateurDate;
-        simulateurMeteo = new SimulateurMeteo(simulateurPotager,simulateurDate);
+        simulateurMeteo = new SimulateurMeteo(simulateurPotager, simulateurDate);
 
         inventaire = Inventaire.getInventaire();
+        magasin = Magasin.getMagasin();
 
         chargerLesIcones();
         placerLesComposantsGraphiques();
-        //ajouterEcouteurClavier(); // si besoin
     }
-/*
-    private void ajouterEcouteurClavier() {
-        addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un objet qui correspond au controleur dans MVC
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch(e.getKeyCode()) {  // on regarde quelle touche a été pressée
-                    case KeyEvent.VK_LEFT : Controle4Directions.getInstance().setDirectionCourante(Direction.gauche); break;
-                    case KeyEvent.VK_RIGHT : Controle4Directions.getInstance().setDirectionCourante(Direction.droite); break;
-                    case KeyEvent.VK_DOWN : Controle4Directions.getInstance().setDirectionCourante(Direction.bas); break;
-                    case KeyEvent.VK_UP : Controle4Directions.getInstance().setDirectionCourante(Direction.haut); break;
-                }
-            }
-        });
-    }
-*/
 
     private void chargerLesIcones() {
         // image libre de droits utilisée pour les légumes : https://www.vecteezy.com/vector-art/2559196-bundle-of-fruits-and-vegetables-icons
@@ -117,7 +108,7 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     private void placerLesComposantsGraphiques() {
         setTitle("A vegetable garden");
-        setSize(680, 585);
+        setSize(721, 655);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
         setResizable(false);
 
@@ -144,7 +135,6 @@ public class VueControleurPotager extends JFrame implements Observer {
         add(grilleJLabels, BorderLayout.CENTER);
 
         // écouter les évènements
-
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
                 final int xx = x; // constantes utiles au fonctionnement de la classe anonyme
@@ -162,10 +152,10 @@ public class VueControleurPotager extends JFrame implements Observer {
                         }else if(infoPlante.isActif()){
 
                             humide.setText("Humidité : " + ((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getHumidite()+"%");
-                            humide.setFont(new Font("Arial", Font.BOLD, 15));
+                            humide.setFont(new Font("Arial", Font.BOLD, 12));
 
                             JLabel variete = new JLabel("Variété : ");
-                            variete.setFont(new Font("Arial", Font.BOLD, 15));
+                            variete.setFont(new Font("Arial", Font.BOLD, 12));
 
                             JLabel varieteIcon = new JLabel();
 
@@ -262,16 +252,38 @@ public class VueControleurPotager extends JFrame implements Observer {
             switch (v){
                 case carotte:
                     labelInventaire[i][j].setIcon(icoCarotte);
+                    labelMagasin[i][j].setIcon(icoCarotte);
+                    labelMagasin[i][j].setName("carotte");
                     break;
                 case salade:
                     labelInventaire[i][j].setIcon(icoSalade);
+                    labelMagasin[i][j].setIcon(icoSalade);
+                    labelMagasin[i][j].setName("salade");
                     break;
                 default:
                     break;
             }
             labelInventaire[i][j].setText(""+inventaire.getContenu().get(v));
+
+            int ii = i;
+            int jj= j;
+            labelMagasin[i][j].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if(labelMagasin[ii][jj].getName().equals("carotte")){
+                        nbLegume.setValue(Integer.parseInt(""+inventaire.getContenu().get(Varietes.carotte)));
+                        legumeVente = Varietes.carotte;
+                    }
+
+                    if(labelMagasin[ii][jj].getName().equals("salade")) {
+                        nbLegume.setValue(Integer.parseInt("" + inventaire.getContenu().get(Varietes.salade)));
+                        legumeVente = Varietes.salade;
+                    }
+                }
+            });
             j++;
         }
+        argent.setText(""+inventaire.getArgent());
     }
 
     public void mettreAJourMeteo(){
@@ -308,14 +320,6 @@ public class VueControleurPotager extends JFrame implements Observer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        /*
-        SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        mettreAJourAffichage();
-                    }
-                }); 
-        */
 
     }
 
@@ -363,17 +367,15 @@ public class VueControleurPotager extends JFrame implements Observer {
 
         utilitaireOutils.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 0, 5, 0);
-        gbc.gridx=0;
+
+
         arrosoir = this.ajoutBouton("Images/arrosoir");
         utilitaireOutils.add(arrosoir, gbc);
 
-        gbc.gridx=1;
         outil = this.ajoutBouton("Images/outil");
 
         utilitaireOutils.add(outil, gbc);
 
-        gbc.gridx=2;
         infoPlante = this.ajoutBouton("Images/info");
         utilitaireOutils.add(infoPlante, gbc);
 
@@ -389,24 +391,17 @@ public class VueControleurPotager extends JFrame implements Observer {
             simulateurPotager.setLegumeSelectionne(mapLegumeIcone.get(icon));
         });
 
-        gbc.gridx=3;
-        utilitaireOutils.add(graines, gbc);
         utilitaire.add(utilitaireOutils);
 
 
         /** Panel de temps **/
         utilitaireTemps.setLayout(new GridBagLayout());
-        GridBagConstraints gbcTemps = new GridBagConstraints();
 
-        gbcTemps.insets = new Insets(5, 0, 5, 0);
-
-        gbcTemps.gridx=0;
         pauseTemps = this.ajoutBouton("Images/tpsNorm");
-        utilitaireTemps.add(pauseTemps, gbcTemps);
+        utilitaireTemps.add(pauseTemps, gbc);
 
-        gbcTemps.gridx=1;
         accTemps = this.ajoutBouton("Images/accelerer");
-        utilitaireTemps.add(accTemps, gbcTemps);
+        utilitaireTemps.add(accTemps, gbc);
         accTemps.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -415,6 +410,12 @@ public class VueControleurPotager extends JFrame implements Observer {
         });
 
         utilitaire.add(utilitaireTemps);
+
+        JLabel vide = new JLabel();
+        vide.setText("                    ");
+        utilitaire.add(vide);
+
+        utilitaire.add(graines);
 
         return utilitaire;
     }
@@ -426,20 +427,14 @@ public class VueControleurPotager extends JFrame implements Observer {
         GridBagConstraints gbcGeneral = new GridBagConstraints();
         gbcGeneral.insets = new Insets(5, 3, 5, 3);
 
-        gbcGeneral.gridx=0;
         momentJournee.setIcon(new ImageIcon("Images/matin.png"));
         general.add(momentJournee, gbcGeneral);
 
-        gbcGeneral.gridx=1;
         general.add(affichageDate, gbcGeneral);
 
-        gbcGeneral.gridx=2;
         meteo.setIcon(new ImageIcon("Images/soleil.png"));
         general.add(meteo, gbcGeneral);
 
-
-        gbcGeneral.gridx=3;
-        temperature.setText("7°");
         temperature.setIcon(new ImageIcon("Images/boutonFond.png"));
         temperature.setHorizontalTextPosition(SwingConstants.CENTER);
         temperature.setForeground(Color.orange);
@@ -452,11 +447,12 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     public JPanel createEastPanel(){
         JPanel global = new JPanel();
-        global.setLayout(new GridLayout(3,1));
+        //global.setLayout(new GridLayout(3,1));
+        global.setLayout(new GridBagLayout());
+        GridBagConstraints gbcGlobal = new GridBagConstraints();
 
         /** Information de case **/
-        GridLayout grid = new GridLayout(3,1);
-        infoCase.setLayout(grid);
+        infoCase.setLayout(new GridLayout(3,1));
         infoCase.setPreferredSize(new Dimension(180,50));
         JLabel infoIcon = new JLabel(new ImageIcon("Images/infoClick.png"));
         infoCase.add(infoIcon);
@@ -464,37 +460,116 @@ public class VueControleurPotager extends JFrame implements Observer {
 
         warning.setEditable(false);
         warning.setBorder(null);
+
         infoCase.add(warning);
         infoCase.add(humide);
         infoCase.add(plante);
 
+        gbcGlobal.fill = GridBagConstraints.HORIZONTAL;
+        gbcGlobal.gridy = 0;
+        gbcGlobal.ipady = 60;
+        global.add(infoCase, gbcGlobal);
 
-        global.add(infoCase);
-
+        /** Inventaire et Magasin **/
         JPanel inventairePanel = new JPanel();
-        inventairePanel.setLayout(new GridLayout(2,1));
-        /** Inventaire **/
+        JPanel magasinPanel = new JPanel();
+        inventairePanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbcInv = new GridBagConstraints();
+
+        magasinPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbcMag = new GridBagConstraints();
+
         JLabel invIcon = new JLabel(new ImageIcon("Images/inventaire.png"));
-        inventairePanel.add(invIcon);
+        gbcInv.gridy = 0;
+        gbcInv.gridx = 1;
+        gbcInv.weighty = 0.1;
+        gbcInv.anchor = GridBagConstraints.PAGE_START;
+        inventairePanel.add(invIcon, gbcInv);
+
+        JLabel magIcon = new JLabel(new ImageIcon("Images/magasin.png"));
+        gbcMag.gridy = 0;
+        gbcMag.ipady= 5;
+        gbcMag.weighty = 0.1;
+        gbcMag.anchor = GridBagConstraints.PAGE_START;
+        magasinPanel.add(magIcon, gbcMag);
 
         labelInventaire = new JLabel[3][3];
-        JComponent grilleJLabels = new JPanel(new GridLayout(3, 3));
-        for(int i= 0; i<3; i++){
-            for(int j=0; j<3; j++){
-                JLabel l = new JLabel();
+        labelMagasin = new JLabel[3][3];
+        JComponent grilleJLabelsInv = new JPanel(new GridLayout(3, 3));
+        JComponent grilleJLabelsMag = new JPanel(new GridLayout(3, 3));
+        for(int x= 0; x<3; x++){
+            for(int y=0; y<3; y++){
+                JLabel i = new JLabel();
+                i.setMinimumSize(new Dimension(55,20));
+                i.setPreferredSize(new Dimension(55,20));
+                JLabel m = new JLabel();
+                m.setMinimumSize(new Dimension(55,20));
+                m.setPreferredSize(new Dimension(55,20));
 
-                labelInventaire[i][j] = l; // on conserve les cases graphiques dans tabJLabel pour avoir un accès pratique à celles-ci (voir mettreAJourAffichage() )
+                labelInventaire[x][y] = i; // on conserve les cases graphiques dans tabJLabel pour avoir un accès pratique à celles-ci (voir mettreAJourAffichage() )
+                labelMagasin[x][y]= m;
 
-                labelInventaire[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
-                grilleJLabels.add(l);
+                labelInventaire[x][y].setBorder(BorderFactory.createLineBorder(Color.black));
+                labelMagasin[x][y].setBorder(BorderFactory.createLineBorder(Color.black));
+
+                grilleJLabelsInv.add(i);
+                grilleJLabelsMag.add(m);
             }
         }
-        inventairePanel.add(grilleJLabels);
 
+        gbcInv.gridy = 1;
+        gbcInv.anchor = GridBagConstraints.CENTER;
+        inventairePanel.add(grilleJLabelsInv, gbcInv);
 
+        gbcMag.gridy = 1;
+        gbcMag.anchor = GridBagConstraints.CENTER;
+        magasinPanel.add(grilleJLabelsMag, gbcMag);
 
+        argent = new JLabel();
+        argent.setIcon(new ImageIcon("Images/monnaie.png"));
+        argent.setText("" + inventaire.getArgent());
+        argent.setFont(new Font("Arial", Font.BOLD, 15));
 
-        global.add(inventairePanel);
+        gbcInv.gridy = 2;
+        gbcInv.anchor = GridBagConstraints.WEST;
+        inventairePanel.add(argent, gbcInv);
+
+        gbcGlobal.gridy = 1;
+        gbcGlobal.ipady = 50;
+        global.add(inventairePanel, gbcGlobal);
+
+        nbLegume = new JSpinner();
+        nbLegume.setMinimumSize(new Dimension(50, 20));
+        nbLegume.setPreferredSize(new Dimension(50, 20));
+        JButton vendre = new JButton("Vendre !");
+
+        vendre.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if ((int) nbLegume.getValue() <= inventaire.getContenu().get(legumeVente)) {
+                    int gain = (int) nbLegume.getValue() * magasin.getPrixVente(legumeVente);
+
+                    switch (legumeVente){
+                        case carotte :
+                            inventaire.removeCarotte((int) nbLegume.getValue());
+                            break;
+                        case salade:
+                            inventaire.removeSalade((int) nbLegume.getValue());
+                            break;
+
+                    }
+                    inventaire.setArgent(gain);
+                }
+            }
+        });
+
+        gbcMag.gridy = 2;
+        magasinPanel.add(nbLegume, gbcMag);
+        gbcMag.gridy = 3;
+        magasinPanel.add(vendre, gbcMag);
+
+        gbcGlobal.gridy = 2;
+        global.add(magasinPanel, gbcGlobal);
 
         return global;
     }

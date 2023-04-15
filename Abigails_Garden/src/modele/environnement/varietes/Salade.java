@@ -1,15 +1,31 @@
 package modele.environnement.varietes;
 
 import modele.SimulateurDate;
+import modele.environnement.CaseCultivable;
 
 public class Salade extends Legume {
 
     public Salade(SimulateurDate _simDate) {
         super(_simDate);
         tempsPousse = 2;
+        satisfaction = 150;
+        prixVente = 5;
         System.out.println("Salade plantée " + heurePlantation.getDateString());
         heureFinPousse = (heurePlantation.getTempsMinutes() + tempsPousse * 60) % 1440;
     }
+
+    @Override
+    public void setSatisfaction(CaseCultivable caseC) {
+        if(satisfaction> 0 && satisfaction<300){
+            if(caseC.getHumidite() >= 80 ){
+                satisfaction += 1;
+            }else if(caseC.getHumidite() <= 65)
+                satisfaction -= 1;
+
+//            System.out.println(satisfaction);
+        }
+    }
+
     @Override
     public Varietes getVariete() {
         return Varietes.salade;

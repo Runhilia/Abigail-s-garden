@@ -271,12 +271,19 @@ public class VueControleurPotager extends JFrame implements Observer {
                     break;
             }
             labelInventaire[i][j].setText(""+inventaire.getContenu().get(v));
+            labelMagasin[i][j].setText(""+magasin.getPrixVente(v));
 
             int ii = i;
             int jj= j;
             labelMagasin[i][j].addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    for(int a=0; a<3; a++){
+                        for(int b=0; b<3; b++){
+                            labelMagasin[a][b].setBorder(BorderFactory.createLineBorder(Color.black));
+                        }
+                    }
+                    labelMagasin[ii][jj].setBorder(BorderFactory.createLineBorder(Color.red));
                     if(labelMagasin[ii][jj].getName().equals("carotte")){
                         nbLegume.setValue(Integer.parseInt(""+inventaire.getContenu().get(Varietes.carotte)));
                         legumeVente = Varietes.carotte;
@@ -593,6 +600,11 @@ public class VueControleurPotager extends JFrame implements Observer {
                         case pasteque -> inventaire.removePasteque((int) nbLegume.getValue());
                     }
                     inventaire.setArgent(gain);
+                    for(int i=0; i<3; i++){
+                        for(int j=0; j<3; j++){
+                            labelMagasin[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
+                        }
+                    }
                 }
             }
         });

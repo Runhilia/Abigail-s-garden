@@ -9,7 +9,6 @@ public class Carotte extends Legume {
         super(_simDate);
         tempsPousse = 0.5;
         satisfaction = 150;
-        prixVente = 3;
         System.out.println("Carotte plantée " + heurePlantation.getDateString());
         heureFinPousse =  (heurePlantation.getTempsMinutes() + tempsPousse * 60) % 1440;
 

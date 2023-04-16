@@ -15,7 +15,6 @@ public abstract class Legume {
     protected double heureFinPousse;
     protected SimulateurDate heurePlantation; // Heure de plantation du légume
     protected SimulateurDate simDate;
-    protected int prixVente;
 
 
     protected int satisfaction;
@@ -30,10 +29,6 @@ public abstract class Legume {
     }
 
     public abstract void setSatisfaction(CaseCultivable caseC);
-
-    public int getPrixVente() {
-        return prixVente;
-    }
 
     public abstract Varietes getVariete();
 

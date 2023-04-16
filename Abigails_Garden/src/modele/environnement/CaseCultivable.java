@@ -25,6 +25,7 @@ public class CaseCultivable extends Case {
                     switch (legume.getVariete()) {
                         case carotte -> inventaire.addCarotte(1);
                         case salade -> inventaire.addSalade(1);
+                        case pasteque -> inventaire.addPasteque(1);
                     }
                     legume = null;
 
@@ -36,6 +37,7 @@ public class CaseCultivable extends Case {
                             switch (simulateurPotager.getLegumeSelectionne()) {
                                 case "Carotte" -> legume = new Carotte(simulateurDate);
                                 case "Salade" -> legume = new Salade(simulateurDate);
+                                case "Pasteque" -> legume = new Pasteque(simulateurDate);
                             }
                         }
                         break;
@@ -94,7 +96,6 @@ public class CaseCultivable extends Case {
     public void run() {
         if (legume != null) {
             legume.nextStep(this);
-
         }
     }
 }

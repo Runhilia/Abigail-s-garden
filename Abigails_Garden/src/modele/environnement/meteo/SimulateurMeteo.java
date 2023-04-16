@@ -81,7 +81,7 @@ public class SimulateurMeteo implements Runnable {
                         for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
                             for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
                                 if (simPot.getPlateau()[i][j] instanceof CaseCultivable) {
-                                    ((CaseCultivable) simPot.getPlateau()[i][j]).setHumiditeAvVal(5, "baisse");
+                                    ((CaseCultivable) simPot.getPlateau()[i][j]).setHumiditeAvVal(3, "baisse");
                                 }
                             }
                         }
@@ -100,15 +100,6 @@ public class SimulateurMeteo implements Runnable {
                             for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
                                 if (simPot.getPlateau()[i][j] instanceof CaseCultivable) {
                                     ((CaseCultivable) simPot.getPlateau()[i][j]).setHumiditeAvVal(5, "ajout");
-                                }
-                            }
-                        }
-                    }
-                    case NUAGE -> {
-                        for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
-                            for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
-                                if (simPot.getPlateau()[i][j] instanceof CaseCultivable) {
-                                    ((CaseCultivable) simPot.getPlateau()[i][j]).setHumiditeAvVal(1, "ajout");
                                 }
                             }
                         }

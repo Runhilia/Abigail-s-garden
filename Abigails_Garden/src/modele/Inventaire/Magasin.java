@@ -12,7 +12,9 @@ public class Magasin {
     private Magasin(){
         prixVente.put(Varietes.salade, 5);
         prixVente.put(Varietes.carotte, 3);
+        prixVente.put(Varietes.pasteque, 10);
     }
+
     public static Magasin getMagasin(){
         if(instance == null)
             instance = new Magasin();

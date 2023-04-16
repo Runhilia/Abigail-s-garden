@@ -26,6 +26,11 @@ public class Inventaire {
         contenu.replace(Varietes.carotte, nbCarotte, nbCarotte+nb);
     }
 
+    public void addPasteque(int nb){
+        int nbPasteque = contenu.get(Varietes.pasteque);
+        contenu.replace(Varietes.pasteque, nbPasteque, nbPasteque+nb);
+    }
+
     public void removeSalade(int nb){
         int nbSalade = contenu.get(Varietes.salade);
         contenu.replace(Varietes.salade, nbSalade, nbSalade-nb);
@@ -34,6 +39,11 @@ public class Inventaire {
     public void removeCarotte(int nb){
         int nbCarotte = contenu.get(Varietes.carotte);
         contenu.replace(Varietes.carotte, nbCarotte, nbCarotte-nb);
+    }
+
+    public void removePasteque(int nb){
+        int nbPasteque = contenu.get(Varietes.pasteque);
+        contenu.replace(Varietes.pasteque, nbPasteque, nbPasteque-nb);
     }
 
     public static Inventaire getInventaire(){

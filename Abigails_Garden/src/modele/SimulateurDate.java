@@ -40,12 +40,8 @@ public class SimulateurDate {
         }
     }
 
-    public void modifierVitesse(boolean accelere){
-        if(accelere){
-            saut = 5;
-        } else{
-            saut = 1;
-        }
+    public void modifierVitesse(int s){
+        saut = s;
     }
 
     /**

@@ -46,6 +46,7 @@ public class VueControleurPotager extends JFrame implements Observer {
     private ImageIcon icoPousse;
     private ImageIcon icoSalade;
     private ImageIcon icoCarotte;
+    private ImageIcon icoPasteque;
 
 
     private HashMap<ImageIcon,String> mapLegumeIcone = new HashMap<ImageIcon,String>(); // permet de récupérer le nom du légume grâce à l'icône
@@ -99,6 +100,9 @@ public class VueControleurPotager extends JFrame implements Observer {
         mapLegumeIcone.put(icoSalade,"Salade");
         icoCarotte = chargerIcone("Images/data.png", 390, 393, 120, 120);
         mapLegumeIcone.put(icoCarotte,"Carotte");
+        icoPasteque = chargerIcone("Images/data.png", 1960, 20, 120, 120);
+        mapLegumeIcone.put(icoPasteque,"Pasteque");
+
         icoVide = chargerIcone("Images/Vide.png");
         icoMur = chargerIcone("Images/Mur.png");
         icoTerre = chargerIcone("Images/terreNORMAL.png");
@@ -162,14 +166,11 @@ public class VueControleurPotager extends JFrame implements Observer {
                             Legume legumeCase = ((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getLegume();
                             if(legumeCase != null) {
                                 switch (legumeCase.getVariete()) {
-                                    case salade:
-                                        varieteIcon.setIcon(icoSalade);
-                                        break;
-                                    case carotte:
-                                        varieteIcon.setIcon(icoCarotte);
-                                        break;
-                                    default:
-                                        break;
+                                    case salade -> varieteIcon.setIcon(icoSalade);
+                                    case carotte -> varieteIcon.setIcon(icoCarotte);
+                                    case pasteque -> varieteIcon.setIcon(icoPasteque);
+                                    default -> {
+                                    }
                                 }
                             }
                             infoCase.remove(plante);
@@ -229,6 +230,7 @@ public class VueControleurPotager extends JFrame implements Observer {
                             iconPlante = switch (legume.getVariete()) {
                                 case salade -> icoSalade;
                                 case carotte -> icoCarotte;
+                                case pasteque -> icoPasteque;
                             };
                         }
                         tabJLabel[x][y].getGraphics().drawImage(icoTerre.getImage(), 0, 0, null);
@@ -260,6 +262,11 @@ public class VueControleurPotager extends JFrame implements Observer {
                     labelMagasin[i][j].setIcon(icoSalade);
                     labelMagasin[i][j].setName("salade");
                     break;
+                case pasteque:
+                    labelInventaire[i][j].setIcon(icoPasteque);
+                    labelMagasin[i][j].setIcon(icoPasteque);
+                    labelMagasin[i][j].setName("pasteque");
+                    break;
                 default:
                     break;
             }
@@ -278,6 +285,11 @@ public class VueControleurPotager extends JFrame implements Observer {
                     if(labelMagasin[ii][jj].getName().equals("salade")) {
                         nbLegume.setValue(Integer.parseInt("" + inventaire.getContenu().get(Varietes.salade)));
                         legumeVente = Varietes.salade;
+                    }
+
+                    if(labelMagasin[ii][jj].getName().equals("pasteque")) {
+                        nbLegume.setValue(Integer.parseInt("" + inventaire.getContenu().get(Varietes.pasteque)));
+                        legumeVente = Varietes.pasteque;
                     }
                 }
             });
@@ -383,6 +395,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         JComboBox<ImageIcon> graines = new JComboBox<ImageIcon>();
         graines.addItem(icoCarotte);
         graines.addItem(icoSalade);
+        graines.addItem(icoPasteque);
 
         // Ajout d'un listener qui permet de récupérer le légume sélectionné
         graines.addActionListener(e -> {
@@ -393,27 +406,47 @@ public class VueControleurPotager extends JFrame implements Observer {
 
         utilitaire.add(utilitaireOutils);
 
+        JLabel vide = new JLabel();
+        vide.setText("             ");
+        utilitaire.add(vide);
+
 
         /** Panel de temps **/
         utilitaireTemps.setLayout(new GridBagLayout());
 
         pauseTemps = this.ajoutBouton("Images/tpsNorm");
         utilitaireTemps.add(pauseTemps, gbc);
+        pauseTemps.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(pauseTemps.isActif()){
+                    simulateurDate.modifierVitesse(0);
+                }
+                else{
+                    simulateurDate.modifierVitesse(1);
+                }
+            }
+        });
 
-        accTemps = this.ajoutBouton("Images/accelerer");
+        accTemps = this.ajoutBouton("Images/tpsAccelerer");
         utilitaireTemps.add(accTemps, gbc);
         accTemps.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                simulateurDate.modifierVitesse(accTemps.isActif());
+                if(accTemps.isActif()){
+                    simulateurDate.modifierVitesse(5);
+                }
+                else{
+                    simulateurDate.modifierVitesse(1);
+                }
             }
         });
 
         utilitaire.add(utilitaireTemps);
 
-        JLabel vide = new JLabel();
-        vide.setText("                    ");
-        utilitaire.add(vide);
+        JLabel vide2 = new JLabel();
+        vide2.setText("                ");
+        utilitaire.add(vide2);
 
         utilitaire.add(graines);
 
@@ -431,6 +464,11 @@ public class VueControleurPotager extends JFrame implements Observer {
         general.add(momentJournee, gbcGeneral);
 
         general.add(affichageDate, gbcGeneral);
+
+        JLabel vide = new JLabel();
+        vide.setText("                     " +
+                "                                                                                                                                ");
+        general.add(vide);
 
         meteo.setIcon(new ImageIcon("Images/soleil.png"));
         general.add(meteo, gbcGeneral);
@@ -470,7 +508,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         gbcGlobal.ipady = 60;
         global.add(infoCase, gbcGlobal);
 
-        /** Inventaire et Magasin **/
+        // Inventaire et Magasin
         JPanel inventairePanel = new JPanel();
         JPanel magasinPanel = new JPanel();
         inventairePanel.setLayout(new GridBagLayout());
@@ -549,14 +587,10 @@ public class VueControleurPotager extends JFrame implements Observer {
                 if ((int) nbLegume.getValue() <= inventaire.getContenu().get(legumeVente)) {
                     int gain = (int) nbLegume.getValue() * magasin.getPrixVente(legumeVente);
 
-                    switch (legumeVente){
-                        case carotte :
-                            inventaire.removeCarotte((int) nbLegume.getValue());
-                            break;
-                        case salade:
-                            inventaire.removeSalade((int) nbLegume.getValue());
-                            break;
-
+                    switch (legumeVente) {
+                        case carotte -> inventaire.removeCarotte((int) nbLegume.getValue());
+                        case salade -> inventaire.removeSalade((int) nbLegume.getValue());
+                        case pasteque -> inventaire.removePasteque((int) nbLegume.getValue());
                     }
                     inventaire.setArgent(gain);
                 }
@@ -573,10 +607,11 @@ public class VueControleurPotager extends JFrame implements Observer {
 
         return global;
     }
+
     /**
      * Ajout d'un boutton avec une icone
-     * @param urlIcone
-     * @return
+     * @param urlIcone Icone du bouton
+     * @return le bouton créé
      */
     public Button ajoutBouton(String urlIcone) {
         Button button = new Button();
@@ -594,7 +629,12 @@ public class VueControleurPotager extends JFrame implements Observer {
                     button.setIcon(iconBase);
                     button.setActif(false);
                 } else {
-                    deselectionnerBoutons();
+                    if(urlIcone.contains("tps")){
+                        deselectionnerBoutonsVitesse();
+                    }
+                    else{
+                        deselectionnerBoutonsOutils();
+                    }
                     button.setIcon(iconClick);
                     button.setActif(true);
                 }
@@ -604,16 +644,19 @@ public class VueControleurPotager extends JFrame implements Observer {
         return button;
     }
 
-    public void deselectionnerBoutons() {
+    public void deselectionnerBoutonsOutils() {
         arrosoir.setIcon(new ImageIcon("Images/arrosoirBase.png"));
         arrosoir.setActif(false);
         outil.setIcon(new ImageIcon("Images/outilBase.png"));
         outil.setActif(false);
         infoPlante.setIcon(new ImageIcon("Images/infoBase.png"));
         infoPlante.setActif(false);
+    }
+
+    public void deselectionnerBoutonsVitesse() {
         pauseTemps.setIcon(new ImageIcon("Images/tpsNormBase.png"));
         pauseTemps.setActif(false);
-        accTemps.setIcon(new ImageIcon("Images/accelererBase.png"));
+        accTemps.setIcon(new ImageIcon("Images/tpsAccelererBase.png"));
         accTemps.setActif(false);
     }
 }

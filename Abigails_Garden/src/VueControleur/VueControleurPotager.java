@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import modele.Inventaire.Inventaire;
-import modele.Inventaire.Magasin;
+import modele.Instance.Inventaire;
+import modele.Instance.Magasin;
 import modele.SimulateurDate;
 import modele.SimulateurPotager;
 import modele.environnement.*;

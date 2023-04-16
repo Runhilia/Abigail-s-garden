@@ -1,4 +1,4 @@
-package modele.Inventaire;
+package modele.Instance;
 
 import modele.environnement.varietes.Varietes;
 

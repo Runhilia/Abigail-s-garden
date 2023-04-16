@@ -111,10 +111,11 @@ public class VueControleurPotager extends JFrame implements Observer {
     }
 
     private void placerLesComposantsGraphiques() {
-        setTitle("A vegetable garden");
+        setTitle("Abigail's Garden");
         setSize(721, 655);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
         setResizable(false);
+        setIconImage(chargerIcone("Images/iconeJeu.png").getImage());
 
         JPanel utilitaire = this.createNorthPanel();
         JPanel infos = this.createSouthPanel();
@@ -421,7 +422,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         /** Panel de temps **/
         utilitaireTemps.setLayout(new GridBagLayout());
 
-        pauseTemps = this.ajoutBouton("Images/tpsNorm");
+        pauseTemps = this.ajoutBouton("Images/pause");
         utilitaireTemps.add(pauseTemps, gbc);
         pauseTemps.addMouseListener(new MouseAdapter() {
             @Override

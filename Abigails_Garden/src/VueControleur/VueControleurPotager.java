@@ -592,7 +592,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         vendre.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if ((int) nbLegume.getValue() <= inventaire.getContenu().get(legumeVente)) {
+                if ((int) nbLegume.getValue() <= inventaire.getContenu().get(legumeVente) && (int) nbLegume.getValue()>=0) {
                     int gain = (int) nbLegume.getValue() * magasin.getPrixVente(legumeVente);
 
                     switch (legumeVente) {
@@ -604,6 +604,7 @@ public class VueControleurPotager extends JFrame implements Observer {
                     for(int i=0; i<3; i++){
                         for(int j=0; j<3; j++){
                             labelMagasin[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
+                            nbLegume.setValue(0);
                         }
                     }
                 }

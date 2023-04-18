@@ -31,22 +31,24 @@ public class Salade extends Legume {
     @Override
     protected void croissance() {
         int heureActuelle = simDate.getTempsMinutes();
-        if(satisfaction < 30){
+        if(satisfaction < 30 && satisfaction != 0){
             tempsPousse = 2.15;
         }else if(satisfaction > 100){
             tempsPousse = 1.85;
-        }else if (satisfaction > 30 && satisfaction < 100){
+        }else if (satisfaction > 30 && satisfaction < 100 && tempsPousse != 0){
             tempsPousse = 2;
+        }else if(satisfaction ==0){
+            etatLegume = EtatLegume.mort;
         }
         heureFinPousse =  (heurePlantation + tempsPousse * 60) % 1440;
 
         double heurePousse = (1440 + heureFinPousse - ((tempsPousse * 60) / 5) * 3) % 1440;
 
-        if(heurePousse <= heureActuelle && heurePousse > heureActuelle - simDate.getSaut())
+        if(heurePousse <= heureActuelle && heurePousse > heureActuelle - simDate.getSaut() && etatLegume!=EtatLegume.mort)
         {
             etatLegume = EtatLegume.pousse;
         }
-        else if(heureFinPousse <= heureActuelle && heureFinPousse > heureActuelle - simDate.getSaut()) {
+        else if(heureFinPousse <= heureActuelle && heureFinPousse > heureActuelle - simDate.getSaut() && etatLegume!=EtatLegume.mort) {
             etatLegume = EtatLegume.legume;
             System.out.println("La salade est prête à être ramassée !");
         }

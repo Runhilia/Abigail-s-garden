@@ -43,7 +43,7 @@ public class VueControleurPotager extends JFrame implements Observer {
     // icones affichées dans la grille
     private ImageIcon icoTerre;
     private ImageIcon icoVide;
-    private ImageIcon icoMur;
+    private ImageIcon icoMort;
     private ImageIcon icoGraine;
     private ImageIcon icoPousse;
     private ImageIcon icoSalade;
@@ -107,10 +107,9 @@ public class VueControleurPotager extends JFrame implements Observer {
         mapLegumeIcone.put(icoPasteque,"Pasteque");
 
         icoVide = chargerIcone("Images/Vide.png");
-        icoMur = chargerIcone("Images/Mur.png");
-        icoTerre = chargerIcone("Images/terreNORMAL.png");
         icoGraine = chargerIcone("Images/graine.png");
         icoPousse = chargerIcone("Images/pousse.png");
+        icoMort = chargerIcone("Images/mort.png");
     }
 
     private void placerLesComposantsGraphiques() {
@@ -153,6 +152,7 @@ public class VueControleurPotager extends JFrame implements Observer {
                         if(outil.isActif()){
                             simulateurPotager.actionUtilisateur(xx, yy, Action.RECOLTER);
                             tabJLabel[xx][yy].getGraphics().clearRect(0,0,50,50);
+                            icoTerre = chargerIcone("Images/terre"+((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getEtatTerre() +".png");
                             tabJLabel[xx][yy].getGraphics().drawImage(icoTerre.getImage(), 0, 0, null);
 
                         }else if(arrosoir.isActif()){
@@ -238,13 +238,16 @@ public class VueControleurPotager extends JFrame implements Observer {
 
                         } else if(legume.getEtatLegume() == EtatLegume.pousse) {
                             iconPlante = icoPousse;
-                        } else {
-                            iconPlante = switch (legume.getVariete()) {
-                                case salade -> icoSalade;
-                                case carotte -> icoCarotte;
-                                case pasteque -> icoPasteque;
-                            };
+                        } else if(legume.getEtatLegume()== EtatLegume.mort) {
+                            iconPlante = icoMort;
+                        }else{
+                                iconPlante = switch (legume.getVariete()) {
+                                    case salade -> icoSalade;
+                                    case carotte -> icoCarotte;
+                                    case pasteque -> icoPasteque;
+                                };
                         }
+
                         tabJLabel[x][y].getGraphics().drawImage(icoTerre.getImage(), 0, 0, null);
                         tabJLabel[x][y].getGraphics().drawImage(iconPlante.getImage(), 10, 10, null);
                     } else

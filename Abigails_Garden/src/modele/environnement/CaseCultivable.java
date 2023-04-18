@@ -23,14 +23,16 @@ public class CaseCultivable extends Case {
          inventaire = Inventaire.getInventaire();
         switch (typeAction) {
             case RECOLTER -> {
-                if (legume != null && legume.getEtatLegume().equals(EtatLegume.legume)) {
-                    switch (legume.getVariete()) {
-                        case carotte -> inventaire.addCarotte(1);
-                        case salade -> inventaire.addSalade(1);
-                        case pasteque -> inventaire.addPasteque(1);
-                    }
-                    legume = null;
-
+                if (legume != null ) {
+                    if(legume.getEtatLegume().equals(EtatLegume.legume)){
+                        switch (legume.getVariete()) {
+                            case carotte -> inventaire.addCarotte(1);
+                            case salade -> inventaire.addSalade(1);
+                            case pasteque -> inventaire.addPasteque(1);
+                        }
+                        legume = null;
+                    }else if (legume.getEtatLegume().equals(EtatLegume.mort))
+                        legume = null;
                 }
             }
             case PLANTER -> {

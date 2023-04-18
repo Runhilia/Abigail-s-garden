@@ -1,5 +1,5 @@
 package modele.environnement.varietes;
 
 public enum EtatLegume {
-    graine,pousse,legume
+    graine,pousse,legume, mort
 }

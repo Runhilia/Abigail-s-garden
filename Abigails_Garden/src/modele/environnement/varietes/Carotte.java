@@ -32,20 +32,23 @@ public class Carotte extends Legume {
     @Override
     protected void croissance() {
         int heureActuelle = simDate.getTempsMinutes();
-        if(satisfaction < 40){
+        if(satisfaction < 40 && satisfaction != 0){
             tempsPousse = 0.65;
         }else if(satisfaction > 110){
             tempsPousse = 0.35;
-        }else if (satisfaction > 40 && satisfaction < 110){
+        }else if (satisfaction > 40 && satisfaction < 110 && tempsPousse != 0){
             tempsPousse = 0.5;
+        }else if(satisfaction ==0){
+            etatLegume = EtatLegume.mort;
         }
+
         heureFinPousse =  (heurePlantation + tempsPousse * 60) % 1440;
 
-        if(heureActuelle == (1440 + heureFinPousse - ((tempsPousse * 60) / 5) * 3) % 1440)
+        if(heureActuelle == (1440 + heureFinPousse - ((tempsPousse * 60) / 5) * 3) % 1440 && etatLegume!=EtatLegume.mort)
         {
             etatLegume = EtatLegume.pousse;
         }
-        else if(heureFinPousse <= heureActuelle && heureFinPousse > heureActuelle - simDate.getSaut()) {
+        else if(heureFinPousse <= heureActuelle && heureFinPousse > heureActuelle - simDate.getSaut() && etatLegume!=EtatLegume.mort) {
             etatLegume = EtatLegume.legume;
             System.out.println("La carotte est prête à être ramassée !");
         }

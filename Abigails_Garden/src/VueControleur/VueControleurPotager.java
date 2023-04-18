@@ -213,7 +213,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         ImageIcon iconPlante= null;
 
         if(!infoPlante.isActif()){
-            warning.setText("Cliquez sur i + une case");
+            warning.setText("    Cliquez sur i + une case");
             infoCase.add(warning);
             infoCase.remove(humide);
             infoCase.remove(plante);
@@ -569,6 +569,7 @@ public class VueControleurPotager extends JFrame implements Observer {
 
         warning.setEditable(false);
         warning.setBorder(null);
+        warning.setFont(new Font("Arial", Font.BOLD, 12));
 
         infoCase.add(warning);
         infoCase.add(humide);

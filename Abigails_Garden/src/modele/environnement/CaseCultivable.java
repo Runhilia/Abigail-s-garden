@@ -3,6 +3,7 @@ package modele.environnement;
 import modele.Instance.Inventaire;
 import modele.SimulateurDate;
 import modele.SimulateurPotager;
+import modele.environnement.meteo.SimulateurMeteo;
 import modele.environnement.varietes.*;
 
 public class CaseCultivable extends Case {
@@ -12,16 +13,16 @@ public class CaseCultivable extends Case {
     private EtatTerre etatTerre = EtatTerre.NORMAL;
     private Inventaire inventaire;
 
-    public CaseCultivable(SimulateurPotager _simulateurPotager,SimulateurDate _simulateurDate) {
-        super(_simulateurPotager,_simulateurDate);
+    public CaseCultivable(SimulateurPotager _simulateurPotager, SimulateurDate _simulateurDate, SimulateurMeteo _simulateurMeteo) {
+        super(_simulateurPotager,_simulateurDate,_simulateurMeteo);
     }
 
     @Override
     public void actionUtilisateur(Action typeAction) {
          inventaire = Inventaire.getInventaire();
-        switch(typeAction){
-            case RECOLTER :
-                if(legume != null && legume.getEtatLegume().equals(EtatLegume.legume)) {
+        switch (typeAction) {
+            case RECOLTER -> {
+                if (legume != null && legume.getEtatLegume().equals(EtatLegume.legume)) {
                     switch (legume.getVariete()) {
                         case carotte -> inventaire.addCarotte(1);
                         case salade -> inventaire.addSalade(1);
@@ -30,24 +31,18 @@ public class CaseCultivable extends Case {
                     legume = null;
 
                 }
-                    break;
-                    case PLANTER:
-                        if (legume == null)
-                        {
-                            switch (simulateurPotager.getLegumeSelectionne()) {
-                                case "Carotte" -> legume = new Carotte(simulateurDate);
-                                case "Salade" -> legume = new Salade(simulateurDate);
-                                case "Pasteque" -> legume = new Pasteque(simulateurDate);
-                            }
-                        }
-                        break;
-                    case ARROSER:
-                        this.setHumiditeAvVal(15, "ajout");
-                        break;
-                    default:
-                        break;
-
+            }
+            case PLANTER -> {
+                if (legume == null) {
+                    switch (simulateurPotager.getLegumeSelectionne()) {
+                        case "Carotte" -> legume = new Carotte(simulateurDate);
+                        case "Salade" -> legume = new Salade(simulateurDate);
+                        case "Pasteque" -> legume = new Pasteque(simulateurDate);
+                    }
                 }
+            }
+            case ARROSER -> this.setHumiditeAvVal(15, "ajout");
+        }
         }
 
         public Legume getLegume() {

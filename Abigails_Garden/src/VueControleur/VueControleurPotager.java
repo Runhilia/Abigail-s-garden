@@ -78,12 +78,12 @@ public class VueControleurPotager extends JFrame implements Observer {
 
 
 
-    public VueControleurPotager(SimulateurPotager _simulateurPotager, SimulateurDate _simulateurDate) {
+    public VueControleurPotager(SimulateurPotager _simulateurPotager, SimulateurDate _simulateurDate, SimulateurMeteo _simulateurMeteo) {
         sizeX = _simulateurPotager.SIZE_X;
         sizeY = _simulateurPotager.SIZE_Y;
         simulateurPotager = _simulateurPotager;
         simulateurDate = _simulateurDate;
-        simulateurMeteo = new SimulateurMeteo(simulateurPotager, simulateurDate);
+        simulateurMeteo = _simulateurMeteo;
 
         inventaire = Inventaire.getInventaire();
         magasin = Magasin.getMagasin();
@@ -422,7 +422,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         /** Panel de temps **/
         utilitaireTemps.setLayout(new GridBagLayout());
 
-        pauseTemps = this.ajoutBouton("Images/pause");
+        pauseTemps = this.ajoutBouton("Images/tpsNorm");
         utilitaireTemps.add(pauseTemps, gbc);
         pauseTemps.addMouseListener(new MouseAdapter() {
             @Override
@@ -474,8 +474,6 @@ public class VueControleurPotager extends JFrame implements Observer {
         general.add(affichageDate, gbcGeneral);
 
         JLabel vide = new JLabel();
-        vide.setText("                     " +
-                "                                                                                                                                ");
         general.add(vide);
 
         meteo.setIcon(new ImageIcon("Images/soleil.png"));

@@ -13,7 +13,7 @@ public abstract class Legume {
     protected EtatLegume etatLegume;
     protected double tempsPousse; // Temps de pousse d'un légume en heures réelles
     protected double heureFinPousse;
-    protected SimulateurDate heurePlantation; // Heure de plantation du légume
+    protected double heurePlantation; // Heure de plantation du légume
     protected SimulateurDate simDate;
 
 
@@ -24,8 +24,8 @@ public abstract class Legume {
      */
     public Legume(SimulateurDate _simDate) {
         etatLegume = EtatLegume.graine;
-        heurePlantation = _simDate;
         simDate = _simDate;
+        heurePlantation = simDate.getTempsMinutes();
     }
 
     public abstract void setSatisfaction(CaseCultivable caseC);

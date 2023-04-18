@@ -9,8 +9,8 @@ public class Pasteque extends Legume{
         super(_simDate);
         tempsPousse = 5;
         satisfaction = 150;
-        System.out.println("Pastèque plantée " + heurePlantation.getDateString());
-        heureFinPousse = (heurePlantation.getTempsMinutes() + tempsPousse * 60) % 1440;
+        System.out.println("Pastèque plantée " + simDate.getDateString());
+        heureFinPousse = (heurePlantation + tempsPousse * 60) % 1440;
     }
 
     @Override

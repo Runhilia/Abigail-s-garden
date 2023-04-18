@@ -9,8 +9,8 @@ public class Salade extends Legume {
         super(_simDate);
         tempsPousse = 2;
         satisfaction = 150;
-        System.out.println("Salade plantée " + heurePlantation.getDateString());
-        heureFinPousse = (heurePlantation.getTempsMinutes() + tempsPousse * 60) % 1440;
+        System.out.println("Salade plantée " + simDate.getDateString());
+        heureFinPousse = (heurePlantation + tempsPousse * 60) % 1440;
     }
 
     @Override

@@ -9,12 +9,13 @@ import modele.environnement.varietes.*;
 public class CaseCultivable extends Case {
 
     private Legume legume;
-    int humidite = 50;
-    private EtatTerre etatTerre = EtatTerre.NORMAL;
+    int humidite;
+    private EtatTerre etatTerre;
     private Inventaire inventaire;
 
     public CaseCultivable(SimulateurPotager _simulateurPotager, SimulateurDate _simulateurDate, SimulateurMeteo _simulateurMeteo) {
         super(_simulateurPotager,_simulateurDate,_simulateurMeteo);
+        initHumidite();
     }
 
     @Override
@@ -49,6 +50,12 @@ public class CaseCultivable extends Case {
         return legume;
     }
 
+    public void initHumidite() {
+        int rand = (int) (Math.random() * 100);
+        humidite = rand;
+        setEtatTerre();
+    }
+
     public int getHumidite() {
         return humidite;
     }
@@ -77,7 +84,7 @@ public class CaseCultivable extends Case {
     }
 
     public void setEtatTerre() {
-        if (humidite <= 20) {
+        if (humidite <= 30) {
             etatTerre = EtatTerre.SEC;
         } else if (humidite >= 70) {
             etatTerre = EtatTerre.HUMIDE;

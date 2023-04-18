@@ -18,7 +18,7 @@ public class SimulateurPotager {
     public static final int SIZE_X = 10;
     public static final int SIZE_Y = 10;
     private String legumeSelectionne = "Carotte";
-    public static Case[][] grilleCases = new Case[SIZE_X][SIZE_Y]; // permet de récupérer une entité à partir de ses coordonnées
+    private final Case[][] grilleCases = new Case[SIZE_X][SIZE_Y]; // permet de récupérer une entité à partir de ses coordonnées
     private final SimulateurDate simDate;
     private final SimulateurMeteo simMet;
 

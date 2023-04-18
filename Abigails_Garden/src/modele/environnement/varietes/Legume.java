@@ -43,7 +43,23 @@ public abstract class Legume {
 
     protected abstract void croissance(); // définir selon les conditions
 
-    public double getHeureFinPousse() {
-        return heureFinPousse;
+    public String getHeureFinPousse() {
+        int heure = (int) (heureFinPousse/60);
+        int minute = (int) (heureFinPousse%60);
+        String date;
+        if (minute < 10 && heure < 10)
+        {
+            date = " 0" + heure + ":0" + minute;
+        }
+        else if (minute < 10) {
+            date = " " + heure + ":0" + minute;
+        }
+        else if (heure < 10) {
+            date = " 0" + heure + ":" + minute;
+        }
+        else {
+            date = " " + heure + ":" + minute;
+        }
+        return date;
     }
 }

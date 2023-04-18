@@ -72,37 +72,6 @@ public class SimulateurMeteo implements Runnable {
                         default -> etatMeteoActuel;
                     };
                 }
-
-                // Modification de l'humidité des cases cultivables
-                switch (etatMeteoTemp) {
-                    case SOLEIL -> {
-                        for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
-                            for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
-                                if (SimulateurPotager.grilleCases[i][j] instanceof CaseCultivable) {
-                                    ((CaseCultivable) SimulateurPotager.grilleCases[i][j]).setHumiditeAvVal(5, "baisse");
-                                }
-                            }
-                        }
-                    }
-                    case ECLAIRCIES -> {
-                        for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
-                            for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
-                                if (SimulateurPotager.grilleCases[i][j] instanceof CaseCultivable) {
-                                    ((CaseCultivable) SimulateurPotager.grilleCases[i][j]).setHumiditeAvVal(3, "baisse");
-                                }
-                            }
-                        }
-                    }
-                    case PLUIE -> {
-                        for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
-                            for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
-                                if (SimulateurPotager.grilleCases[i][j] instanceof CaseCultivable) {
-                                    ((CaseCultivable) SimulateurPotager.grilleCases[i][j]).setHumiditeAvVal(10, "ajout");
-                                }
-                            }
-                        }
-                    }
-                }
             }
             else{
                 etatMeteoTemp = etatMeteoActuel;

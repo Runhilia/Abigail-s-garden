@@ -20,6 +20,7 @@ import modele.SimulateurDate;
 import modele.SimulateurPotager;
 import modele.environnement.*;
 import modele.environnement.Action;
+import modele.environnement.meteo.EnumMeteo;
 import modele.environnement.meteo.SimulateurMeteo;
 import modele.environnement.varietes.*;
 
@@ -37,6 +38,7 @@ public class VueControleurPotager extends JFrame implements Observer {
     // taille de la grille affichée
     private int sizeX;
     private int sizeY;
+    private boolean dixMinutesPassees = false;
 
     // icones affichées dans la grille
     private ImageIcon icoTerre;
@@ -315,6 +317,59 @@ public class VueControleurPotager extends JFrame implements Observer {
         argent.setText(""+inventaire.getArgent());
     }
 
+    /**
+     * Modification de l'humidité des cases cultivables
+     */
+    public void changeHumidite(EnumMeteo etatMeteo){
+        // On change l'humidité toutes les 10 minutes
+        if(simulateurDate.getMinute()%10 - simulateurDate.getSaut() < 0) {
+            if (!dixMinutesPassees) {
+                dixMinutesPassees = true;
+                switch (etatMeteo) {
+                    case SOLEIL -> {
+                        for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
+                            for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
+                                if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
+                                    ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(5, "baisse");
+                                }
+                            }
+                        }
+                    }
+                    case ECLAIRCIES -> {
+                        for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
+                            for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
+                                if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
+                                    ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(3, "baisse");
+                                }
+                            }
+                        }
+                    }
+                    case PLUIE -> {
+                        for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
+                            for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
+                                if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
+                                    ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(10, "ajout");
+                                }
+                            }
+                        }
+                    }
+                    case NUAGE -> {
+                        for (int i = 0; i < SimulateurPotager.SIZE_X; i++) {
+                            for (int j = 0; j < SimulateurPotager.SIZE_Y; j++) {
+                                if (simulateurPotager.getPlateau()[i][j] instanceof CaseCultivable) {
+                                    ((CaseCultivable) simulateurPotager.getPlateau()[i][j]).setHumiditeAvVal(1, "baisse");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            dixMinutesPassees = false;
+        }
+    }
+
     public void mettreAJourMeteo(){
         switch(simulateurMeteo.getCalcMomentJournee()){
             case MATIN -> {
@@ -330,13 +385,15 @@ public class VueControleurPotager extends JFrame implements Observer {
                 momentJournee.setIcon(new ImageIcon("Images/nuit.png"));
             }
         }
+        EnumMeteo etatMeteo = simulateurMeteo.getCalcEtatMeteo();
 
-        switch (simulateurMeteo.getCalcEtatMeteo()) {
+        switch (etatMeteo) {
             case SOLEIL -> meteo.setIcon(new ImageIcon("Images/soleil.png"));
             case PLUIE -> meteo.setIcon(new ImageIcon("Images/pluie.png"));
             case ECLAIRCIES -> meteo.setIcon(new ImageIcon("Images/soleilNuage.png"));
             case NUAGE -> meteo.setIcon(new ImageIcon("Images/nuage.png"));
         }
+        changeHumidite(etatMeteo);
         temperature.setText(simulateurMeteo.getCalcTemperature()+"°C");
     }
 

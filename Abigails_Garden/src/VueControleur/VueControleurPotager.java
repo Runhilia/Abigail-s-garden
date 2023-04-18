@@ -69,6 +69,7 @@ public class VueControleurPotager extends JFrame implements Observer {
     private JTextField warning = new JTextField();
 
     private JPanel plante = new JPanel();
+    private JLabel finPoussePlante = new JLabel();
 
     private Inventaire inventaire;
     private Magasin magasin;
@@ -159,6 +160,7 @@ public class VueControleurPotager extends JFrame implements Observer {
                             humide.setText("Humidité : " + ((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getHumidite()+"%");
                             humide.setFont(new Font("Arial", Font.BOLD, 12));
 
+
                             JLabel variete = new JLabel("Variété : ");
                             variete.setFont(new Font("Arial", Font.BOLD, 12));
 
@@ -173,6 +175,11 @@ public class VueControleurPotager extends JFrame implements Observer {
                                     default -> {
                                     }
                                 }
+                                finPoussePlante.setText("Fin de pousse : " + ((CaseCultivable) simulateurPotager.getPlateau()[xx][yy]).getLegume().getHeureFinPousse());
+                                finPoussePlante.setFont(new Font("Arial", Font.BOLD, 12));
+                            }else{
+                                finPoussePlante.setText(" ");
+                                variete.setText(" ");
                             }
                             infoCase.remove(plante);
                             plante.removeAll();
@@ -182,6 +189,7 @@ public class VueControleurPotager extends JFrame implements Observer {
                             plante.add(variete);
                             plante.add(varieteIcon);
                             infoCase.add(plante);
+                            infoCase.add(finPoussePlante);
                         }
                         else
                             simulateurPotager.actionUtilisateur(xx, yy, Action.PLANTER);
@@ -207,6 +215,7 @@ public class VueControleurPotager extends JFrame implements Observer {
             infoCase.add(warning);
             infoCase.remove(humide);
             infoCase.remove(plante);
+            infoCase.remove(finPoussePlante);
             plante.removeAll();
             infoCase.repaint();
 
@@ -491,13 +500,12 @@ public class VueControleurPotager extends JFrame implements Observer {
 
     public JPanel createEastPanel(){
         JPanel global = new JPanel();
-        //global.setLayout(new GridLayout(3,1));
         global.setLayout(new GridBagLayout());
         GridBagConstraints gbcGlobal = new GridBagConstraints();
 
         /** Information de case **/
-        infoCase.setLayout(new GridLayout(3,1));
-        infoCase.setPreferredSize(new Dimension(180,50));
+        infoCase.setLayout(new GridLayout(4,1));
+        infoCase.setPreferredSize(new Dimension(180,60));
         JLabel infoIcon = new JLabel(new ImageIcon("Images/infoClick.png"));
         infoCase.add(infoIcon);
         plante.setLayout(new GridLayout(1,2));
@@ -508,6 +516,7 @@ public class VueControleurPotager extends JFrame implements Observer {
         infoCase.add(warning);
         infoCase.add(humide);
         infoCase.add(plante);
+        infoCase.add(finPoussePlante);
 
         gbcGlobal.fill = GridBagConstraints.HORIZONTAL;
         gbcGlobal.gridy = 0;

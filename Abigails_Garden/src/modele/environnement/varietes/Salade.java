@@ -8,20 +8,18 @@ public class Salade extends Legume {
     public Salade(SimulateurDate _simDate) {
         super(_simDate);
         tempsPousse = 2;
-        satisfaction = 150;
+        satisfaction = 75;
         System.out.println("Salade plantée " + simDate.getDateString());
         heureFinPousse = (heurePlantation + tempsPousse * 60) % 1440;
     }
 
     @Override
     public void setSatisfaction(CaseCultivable caseC) {
-        if(satisfaction> 0 && satisfaction<300){
-            if(caseC.getHumidite() >= 80 ){
+        if(satisfaction> 0 && satisfaction<150){
+            if(caseC.getHumidite() >= 70 ){
                 satisfaction += 1;
-            }else if(caseC.getHumidite() <= 65)
+            }else if(caseC.getHumidite() <= 50)
                 satisfaction -= 1;
-
-//            System.out.println(satisfaction);
         }
     }
 
@@ -33,6 +31,15 @@ public class Salade extends Legume {
     @Override
     protected void croissance() {
         int heureActuelle = simDate.getTempsMinutes();
+        if(satisfaction < 30){
+            tempsPousse = 2.15;
+        }else if(satisfaction > 100){
+            tempsPousse = 1.85;
+        }else if (satisfaction > 30 && satisfaction < 100){
+            tempsPousse = 2;
+        }
+        heureFinPousse =  (heurePlantation + tempsPousse * 60) % 1440;
+
         double heurePousse = (1440 + heureFinPousse - ((tempsPousse * 60) / 5) * 3) % 1440;
 
         if(heurePousse <= heureActuelle && heurePousse > heureActuelle - simDate.getSaut())

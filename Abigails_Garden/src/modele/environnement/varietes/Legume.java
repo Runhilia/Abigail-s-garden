@@ -12,6 +12,7 @@ public abstract class Legume {
 
     protected EtatLegume etatLegume;
     protected double tempsPousse; // Temps de pousse d'un légume en heures réelles
+
     protected double heureFinPousse;
     protected double heurePlantation; // Heure de plantation du légume
     protected SimulateurDate simDate;
@@ -41,4 +42,8 @@ public abstract class Legume {
     }
 
     protected abstract void croissance(); // définir selon les conditions
+
+    public double getHeureFinPousse() {
+        return heureFinPousse;
+    }
 }

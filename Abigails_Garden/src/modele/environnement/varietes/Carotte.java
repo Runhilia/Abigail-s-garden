@@ -17,12 +17,10 @@ public class Carotte extends Legume {
     @Override
     public void setSatisfaction(CaseCultivable caseC) {
         if(satisfaction> 0 && satisfaction<150){
-            if(caseC.getHumidite() >= 85 ){
+            if(caseC.getHumidite() >= 60){
                 satisfaction += 1;
-            }else if(caseC.getHumidite() <= 60)
+            }else if(caseC.getHumidite() <= 40)
                 satisfaction -= 1;
-
-//            System.out.println(satisfaction);
         }
     }
 
@@ -34,15 +32,14 @@ public class Carotte extends Legume {
     @Override
     protected void croissance() {
         int heureActuelle = simDate.getTempsMinutes();
-        if(satisfaction < 30){
+        if(satisfaction < 40){
             tempsPousse = 0.65;
-        }else if(satisfaction > 100){
+        }else if(satisfaction > 110){
             tempsPousse = 0.35;
-        }else if (satisfaction > 30 && satisfaction < 100){
+        }else if (satisfaction > 40 && satisfaction < 110){
             tempsPousse = 0.5;
         }
         heureFinPousse =  (heurePlantation + tempsPousse * 60) % 1440;
-        System.out.println("Heure fin pousse : " + heureFinPousse);
 
         if(heureActuelle == (1440 + heureFinPousse - ((tempsPousse * 60) / 5) * 3) % 1440)
         {
